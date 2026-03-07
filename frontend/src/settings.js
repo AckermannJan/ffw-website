@@ -8,6 +8,6 @@ export default {
   API_BASE_PATH: "https://wordpress.feuerwehr-traisa.de/wp-json/wp/v2/",
   CUSTOM_API_BASE_PATH:
     "https://wordpress.feuerwehr-traisa.de/wp-json/types/v1/",
-  ROSTER_BASE_URL:
-    "https://wordpress.feuerwehr-traisa.de/wp-content/uploads/ffw-roster"
+  ROSTER_API_URL:
+    "https://wordpress.feuerwehr-traisa.de/wp-json/types/v1/getRoster/"
 };

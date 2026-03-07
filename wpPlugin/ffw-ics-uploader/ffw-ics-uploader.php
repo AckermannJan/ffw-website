@@ -334,32 +334,36 @@ function ffw_render_admin_page(): void {
         <h2>Technische Details</h2>
         <ul>
             <li><strong>Gespeicherte Datei:</strong> <code><?php echo esc_html( FFW_ROSTER_FILE ); ?></code></li>
-            <li><strong>Öffentliche URL:</strong> <a href="<?php echo esc_url( $roster_url ); ?>" target="_blank"><?php echo esc_url( $roster_url ); ?></a></li>
+            <li><strong>REST API:</strong> <code><?php echo esc_html( rest_url( 'types/v1/getRoster/' ) ); ?></code> — gibt das JSON-Array direkt zurück (CORS-kompatibel)</li>
             <li><strong>Format:</strong> JSON-Array (kompatibel mit <code>icsToJsonConverter.js</code>)</li>
         </ul>
     </div>
     <?php
 }
 
-// ─── REST Endpoint: GET /wp-json/types/v1/getRosterUrl/ ───────────────────────
+// ─── REST Endpoint: GET /wp-json/types/v1/getRoster/ ─────────────────────────
+// Returns the roster JSON array directly so the frontend avoids CORS issues
+// with direct file access.
 
 add_action( 'rest_api_init', function () {
-    register_rest_route( 'types/v1', '/getRosterUrl/', [
+    register_rest_route( 'types/v1', '/getRoster/', [
         'methods'             => 'GET',
-        'callback'            => 'ffw_rest_get_roster_url',
+        'callback'            => 'ffw_rest_get_roster',
         'permission_callback' => '__return_true',
     ] );
 } );
 
-function ffw_rest_get_roster_url(): WP_REST_Response {
-    $url  = FFW_ROSTER_URL . '/' . FFW_ROSTER_FILENAME;
-    $meta = file_exists( FFW_ROSTER_META )
-        ? json_decode( file_get_contents( FFW_ROSTER_META ), true )
-        : null;
+function ffw_rest_get_roster(): WP_REST_Response {
+    if ( ! file_exists( FFW_ROSTER_FILE ) ) {
+        return new WP_REST_Response( [], 200 );
+    }
 
-    return new WP_REST_Response( [
-        'url'     => $url,
-        'updated' => $meta['updated'] ?? null,
-        'count'   => $meta['count']   ?? null,
-    ], 200 );
+    $content = file_get_contents( FFW_ROSTER_FILE );
+    $roster  = json_decode( $content, true );
+
+    if ( ! is_array( $roster ) ) {
+        return new WP_REST_Response( [], 200 );
+    }
+
+    return new WP_REST_Response( $roster, 200 );
 }
