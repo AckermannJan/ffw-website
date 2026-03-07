@@ -41,7 +41,7 @@
                 :key="index"
                 class="removeLink"
               >
-                <v-row>
+                <v-row class="mb-4">
                   <v-col cols="1">
                     <v-icon
                       color="#fff"
@@ -83,17 +83,19 @@
             </div>
             <div v-else>
               <v-row align="center" v-for="index in 10" :key="index">
-                <v-col cols="1">
+                <v-col>
                   <v-skeleton-loader
-                    type="image"
-                    style="height: 40px"
+                    type="text"
+                    color="transparent"
+                    class="alarm-skeleton__text"
                   ></v-skeleton-loader>
                 </v-col>
-                <v-col>
-                  <v-skeleton-loader type="text"></v-skeleton-loader>
-                </v-col>
                 <v-col cols="2">
-                  <v-skeleton-loader type="text"></v-skeleton-loader>
+                  <v-skeleton-loader
+                    type="text"
+                    color="transparent"
+                    class="alarm-skeleton__text"
+                  ></v-skeleton-loader>
                 </v-col>
               </v-row>
             </div>
@@ -154,6 +156,19 @@ export default {
   }
 };
 </script>
+
+<style>
+.alarm-skeleton__text .v-skeleton-loader__text {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.alarm-skeleton__text .v-skeleton-loader__paragraph {
+  background-color: rgba(255, 255, 255, 0) !important;
+  &::after { display: none; }
+}
+</style>
 
 <style scoped lang="scss">
 .circle {

@@ -27,7 +27,7 @@
           </v-col>
           <v-col class="calender__info" style="padding: 0; position: relative">
             <div>{{ meeting.post_title }}</div>
-            <div class="subtitle-2 calendar__detail-date">
+            <div class="text-subtitle-2 calendar__detail-date">
               {{ formatDate(meeting.date.timestamp) }}
             </div>
           </v-col>

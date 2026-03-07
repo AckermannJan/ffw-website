@@ -63,7 +63,8 @@ export default {
   &__text {
     border-left: solid 10px #af4a45;
     position: relative;
-    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
     &--hide {
       text-overflow: ellipsis;
       max-height: 190px;
@@ -92,13 +93,10 @@ export default {
 }
 
 .btn {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: {
-    right: 15px;
-    bottom: 15px;
-  }
+  align-self: flex-end;
+  margin-top: auto;
+  margin-right: 15px;
+  margin-bottom: 15px;
   color: #fff;
 }
 </style>
