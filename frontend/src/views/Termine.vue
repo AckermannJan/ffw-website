@@ -6,13 +6,13 @@
       :key="index"
     >
       <v-col class="calendar__date">
-        <span>{{ meeting.zeitpunkt.timestamp | weekDay }}</span>
-        <span>{{ meeting.zeitpunkt.timestamp | numberDay }}</span>
+        <span>{{ formatWeekDay(meeting.zeitpunkt.timestamp) }}</span>
+        <span>{{ formatNumberDay(meeting.zeitpunkt.timestamp) }}</span>
       </v-col>
       <v-col class="calender__info" style="padding: 0; position: relative">
         <div>{{ meeting.post_title }}</div>
         <div class="subtitle-2 calendar__detail-date">
-          {{ meeting.zeitpunkt.timestamp | date }}
+          {{ formatDate(meeting.zeitpunkt.timestamp) }}
         </div>
       </v-col>
     </v-row>
@@ -20,59 +20,30 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { momentInstance } from "@/utils/moment";
+import { mapState, mapActions } from "pinia";
+import { useTermineStore } from "@/store/modules/termine";
+import { useHead } from "@unhead/vue";
+import { formatDate, formatWeekDay, formatNumberDay } from "@/utils/dateFilters";
 
 export default {
   name: "Termine",
-  filters: {
-    date(date) {
-      return (
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("DD MMMM") +
-        " um " +
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("HH:mm")
-      );
-    },
-    weekDay(date) {
-      return momentInstance(parseInt(date) * 1000)
-        .utc()
-        .format("dd")
-        .toUpperCase();
-    },
-    numberDay(date) {
-      return momentInstance(parseInt(date) * 1000)
-        .utc()
-        .format("DD");
-    }
-  },
-  metaInfo() {
-    return {
+  setup() {
+    useHead({
       title: "Feuerwehr Mühltal Traisa | Termine",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Termine"
-        }
-      ]
-    };
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Termine" }]
+    });
   },
   computed: {
-    ...mapGetters("termine", {
-      termine: "termine",
-      isLoading: "isLoading"
-    })
+    ...mapState(useTermineStore, ["isLoading", "termine"])
   },
   mounted() {
     this.getAllMeetings();
   },
   methods: {
-    ...mapActions("termine", {
-      getAllMeetings: "getAllMeetings"
-    })
+    ...mapActions(useTermineStore, ["getAllMeetings"]),
+    formatDate,
+    formatWeekDay,
+    formatNumberDay
   }
 };
 </script>

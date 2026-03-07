@@ -28,18 +28,14 @@
 </template>
 
 <script>
+import { useHead } from "@unhead/vue";
 export default {
   name: "Index",
-  metaInfo() {
-    return {
+  setup() {
+    useHead({
       title: "Feuerwehr Mühltal Traisa | Kindergruppen",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Kindergruppen"
-        }
-      ]
-    };
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Kindergruppen" }]
+    });
   }
 };
 </script>

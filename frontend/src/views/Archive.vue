@@ -8,7 +8,7 @@
     >
       <v-col
         class="page__img"
-        v-if="['lg', 'xl', 'md'].includes($vuetify.breakpoint.name)"
+        v-if="['lg', 'xl', 'md'].includes(breakpointName)"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -27,34 +27,29 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "pinia";
+import { useArchiveStore } from "@/store/modules/archive";
+import { useDisplay } from "vuetify";
+import { useHead } from "@unhead/vue";
 
 export default {
   name: "Archive",
+  setup() {
+    const { name } = useDisplay();
+    useHead({
+      title: "Feuerwehr Mühltal Traisa | Archiv",
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Archiv" }]
+    });
+    return { breakpointName: name };
+  },
   computed: {
-    ...mapGetters("archive", {
-      isLoading: "isLoading",
-      archiveData: "archiveData"
-    })
+    ...mapState(useArchiveStore, ["isLoading", "archiveData"])
   },
   mounted() {
     this.loadArchive();
   },
   methods: {
-    ...mapActions("archive", {
-      loadArchive: "loadArchive"
-    })
-  },
-  metaInfo() {
-    return {
-      title: "Feuerwehr Mühltal Traisa | Archiv",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Archiv"
-        }
-      ]
-    };
+    ...mapActions(useArchiveStore, ["loadArchive"])
   }
 };
 </script>

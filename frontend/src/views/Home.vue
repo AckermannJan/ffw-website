@@ -9,7 +9,7 @@
     >
       <v-col
         class="page__img"
-        v-if="['lg', 'xl', 'md'].includes($vuetify.breakpoint.name)"
+        v-if="['lg', 'xl', 'md'].includes(breakpointName)"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -28,17 +28,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import WelcomeMsg from "../components/partials/WelcomeMsg";
+import { mapState } from "pinia";
+import { useIndexStore } from "@/store/modules/index";
+import { useDisplay } from "vuetify";
+import WelcomeMsg from "../components/partials/WelcomeMsg.vue";
 
 export default {
   name: "Home",
   components: { WelcomeMsg },
+  setup() {
+    const { name } = useDisplay();
+    return { breakpointName: name };
+  },
   computed: {
-    ...mapGetters("index", {
-      isLoading: "isLoading",
-      pages: "pages"
-    })
+    ...mapState(useIndexStore, [
+
+  "isLoading", "pages"
+    ])
   }
 };
 </script>

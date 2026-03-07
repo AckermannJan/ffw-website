@@ -20,7 +20,7 @@
             <p style="margin-left: 10px">{{ alarm.alarmierungsart }}</p>
             <div class="headline mb-4"><b>Alarmierungszeitpunkt</b></div>
             <p style="margin-left: 10px">
-              {{ alarm.alarmierungszeitpunkt.timestamp | date }}
+              {{ formatDate(alarm.alarmierungszeitpunkt.timestamp) }}
             </p>
           </v-col>
         </v-row>
@@ -52,13 +52,14 @@
               Object.values(alarm.medienbilder)[0] !== ''
           "
           height="430"
-          show-arrows-on-hover
+          show-arrows="hover"
         >
           <v-carousel-item
             v-for="(item, i) in alarm.medienbilder"
             :key="i"
-            :src="item"
-          ></v-carousel-item>
+          >
+            <v-img :src="item" height="100%"></v-img>
+          </v-carousel-item>
         </v-carousel>
       </div>
     </div>
@@ -67,13 +68,23 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { momentInstance } from "@/utils/moment";
-import Loader from "../../components/partials/Loader";
+import { mapState, mapActions } from "pinia";
+import { useAlarmsStore } from "@/store/modules/alarms";
+import { useHead } from "@unhead/vue";
+import { computed } from "vue";
+import { formatDate } from "@/utils/dateFilters";
+import Loader from "../../components/partials/Loader.vue";
 
 export default {
   name: "singleAlarm",
   components: { Loader },
+  setup() {
+    const alarmsStore = useAlarmsStore();
+    useHead({
+      title: computed(() => "Feuerwehr Mühltal Traisa | " + (alarmsStore.alarm.post_title || "")),
+      meta: [{ name: "robots", content: "nofollow" }]
+    });
+  },
   data() {
     return {
       carImages: {
@@ -110,21 +121,8 @@ export default {
       }
     };
   },
-  filters: {
-    date(date) {
-      return (
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("DD MMMM") +
-        " um " +
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("HH:mm")
-      );
-    }
-  },
   computed: {
-    ...mapGetters("alarms", {
+    ...mapState(useAlarmsStore, {
       alarm: "alarm",
       isLoading: "isAlarmLoading"
     })
@@ -133,20 +131,8 @@ export default {
     this.getAlarm(this.$route.params.pageSlug);
   },
   methods: {
-    ...mapActions("alarms", {
-      getAlarm: "getAlarm"
-    })
-  },
-  metaInfo() {
-    return {
-      title: "Feuerwehr Mühltal Traisa | " + this.alarm.post_title,
-      meta: [
-        {
-          name: "robots",
-          content: "nofollow"
-        }
-      ]
-    };
+    ...mapActions(useAlarmsStore, ["getAlarm"]),
+    formatDate
   }
 };
 </script>

@@ -1,7 +1,6 @@
 <template>
   <v-app id="my-app">
-    <transition name="fade">
-      <v-overlay :value="isLoading" class="overlay" v-if="isLoading">
+    <v-overlay :model-value="isLoading" class="overlay" v-if="isLoading">
         <div class="welcomeLoader">
           <img
             src="http://wordpress.feuerwehr-traisa.de/wp-content/uploads/2025/05/rlbs.png"
@@ -19,8 +18,7 @@
           </p>
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </div>
-      </v-overlay>
-    </transition>
+    </v-overlay>
 
     <transition name="fade">
       <app-header v-if="!isLoading" />
@@ -28,7 +26,6 @@
     <transition name="fade">
       <v-container
         fluid
-        fill-height
         class="mb-8 main-content"
         v-if="!isLoading"
       >
@@ -49,27 +46,49 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState } from "pinia";
+import { useIndexStore } from "./store/modules/index";
+import { useHead } from "@unhead/vue";
 import Header from "./components/partials/Header.vue";
 import Footer from "./components/partials/Footer.vue";
-import Sidebar from "./components/partials/Sidebar";
+import Sidebar from "./components/partials/Sidebar.vue";
 import { momentInstance } from "@/utils/moment";
 
 export default {
+  setup() {
+    useHead({
+      title: "Feuerwehr Mühltal Traisa",
+      htmlAttrs: { lang: "de" },
+      meta: [
+        { charset: "utf-8" },
+        { name: "robots", content: "INDEX, FOLLOW" },
+        {
+          name: "description",
+          content:
+            "Offizielle Homepage der Freiwilligen Feuerwehr Mühltal-Traisa. Auf dieser Seite finden Sie Informationen über die Feuerwehr Traisa."
+        },
+        {
+          name: "author",
+          content: "Freiwillige Feuerwehr Mühltal Traisa."
+        },
+        {
+          name: "keywords",
+          content:
+            "feuer,feuerwehr,feuerwache,traisa,mühltal,muehltal,wache,aua,ortsteil,brand,ff," +
+            "fw,ffw,post,bma,ölsput,lf,tlf,hlf,rtw,feuerwehrmann,dienst,freiwillig,freiwillige," +
+            "ehrenamtlich,immer,da,darmstadt,muehltal,gemeinde,mtf,mtw,löschfahrzeug,löschgruppenfahrzeug," +
+            "einsatz,einsätze,fft,ffwt,traase,traisa"
+        }
+      ]
+    });
+  },
   data() {
     return {
       showLoader: true
     };
   },
   computed: {
-    ...mapGetters({
-      isLoading: "index/isLoading",
-      loadingProgress: "loadingProgress"
-    }),
-
-    loaderStyle() {
-      return `width: ${this.loadingProgress}%;`;
-    },
+    ...mapState(useIndexStore, ["isLoading"]),
     yearsInExistence() {
       return momentInstance().diff("1880-01-01", "years", false);
     }
@@ -78,33 +97,6 @@ export default {
     Sidebar,
     appHeader: Header,
     appFooter: Footer
-  },
-  metaInfo: {
-    title: "Feuerwehr Mühltal Traisa",
-    htmlAttrs: {
-      lang: "de"
-    },
-    meta: [
-      { charset: "utf-8" },
-      { name: "robots", content: "INDEX, FOLLOW" },
-      {
-        name: "description",
-        content:
-          "Offizielle Homepage der Freiwilligen Feuerwehr Mühltal-Traisa. Auf dieser Seite finden Sie Informationen über die Feuerwehr Traisa."
-      },
-      {
-        name: "author",
-        content: "Freiwillige Feuerwehr Mühltal Traisa."
-      },
-      {
-        name: "keywords",
-        content:
-          "feuer,feuerwehr,feuerwache,traisa,mühltal,muehltal,wache,aua,ortsteil,brand,ff," +
-          "fw,ffw,post,bma,ölsput,lf,tlf,hlf,rtw,feuerwehrmann,dienst,freiwillig,freiwillige," +
-          "ehrenamtlich,immer,da,darmstadt,muehltal,gemeinde,mtf,mtw,löschfahrzeug,löschgruppenfahrzeug," +
-          "einsatz,einsätze,fft,ffwt,traase,traisa"
-      }
-    ]
   }
 };
 </script>

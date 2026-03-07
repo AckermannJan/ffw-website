@@ -112,20 +112,16 @@
 </template>
 
 <script>
-import Report from "../components/partials/Report/Report";
+import Report from "../components/partials/Report/Report.vue";
+import { useHead } from "@unhead/vue";
 export default {
   name: "Technik",
   components: { Report },
-  metaInfo() {
-    return {
+  setup() {
+    useHead({
       title: "Feuerwehr Mühltal Traisa | Technik",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Technik"
-        }
-      ]
-    };
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Technik" }]
+    });
   }
 };
 </script>

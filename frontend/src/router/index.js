@@ -1,7 +1,4 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
@@ -95,11 +92,11 @@ const routes = [
   }
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHistory(),
   routes,
-  mode: "history",
   scrollBehavior() {
-    return { x: 0, y: 0 };
+    return { top: 0, left: 0 };
   }
 });
 

@@ -1,20 +1,20 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
+import { createPinia } from "pinia";
 import vuetify from "./plugins/vuetify";
-import VueMeta from "vue-meta";
+import { createHead } from "@unhead/vue";
+import { useIndexStore } from "./store/modules/index";
+import { useSideBarStore } from "./store/modules/sideBar";
 
-Vue.config.productionTip = false;
-Vue.use(VueMeta);
+const app = createApp(App);
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App),
-  created() {
-    this.$store.dispatch("index/getIndexInfo");
-    this.$store.dispatch("sideBar/getSidebarInfo");
-  }
-}).$mount("#app");
+app.use(createPinia());
+app.use(router);
+app.use(vuetify);
+app.use(createHead());
+
+app.mount("#app");
+
+useIndexStore().getIndexInfo();
+useSideBarStore().getSidebarInfo();

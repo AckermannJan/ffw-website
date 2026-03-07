@@ -11,10 +11,10 @@
           { 'calendar__date--active': isActive(appointment) }
         ]"
       >
-        <span>{{ appointment.Datum | weekDay }}</span>
+        <span>{{ rosterWeekDay(appointment.Datum) }}</span>
         <span
-          >{{ appointment.Datum | numberDay }}.{{
-            appointment.Datum | numberMonth
+          >{{ rosterNumberDay(appointment.Datum) }}.{{
+            rosterNumberMonth(appointment.Datum)
           }}</span
         >
       </v-col>
@@ -33,9 +33,17 @@
 
 <script>
 import { momentInstance } from "@/utils/moment";
+import { useHead } from "@unhead/vue";
+import { rosterWeekDay, rosterNumberDay, rosterNumberMonth } from "@/utils/dateFilters";
 
 export default {
   name: "Termine",
+  setup() {
+    useHead({
+      title: "Feuerwehr Mühltal Traisa | Dienstplan",
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Dienstplan" }]
+    });
+  },
   data: () => {
     return {
       rosterData: null,
@@ -51,38 +59,15 @@ export default {
   props: {
     roster: null
   },
-  filters: {
-    weekDay(date) {
-      if (!date) return;
-      // Stupid workaround because moment always wants to use en format. No time to look into it further...
-      const tmpDate = date.split(".");
-      return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`)
-        .format("dd")
-        .toUpperCase();
-    },
-    numberDay(date) {
-      if (!date) return;
-      // Stupid workaround because moment always wants to use en format. No time to look into it further...
-      const tmpDate = date.split(".");
-      return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format(
-        "DD"
-      );
-    },
-    numberMonth(date) {
-      if (!date) return;
-      // Stupid workaround because moment always wants to use en format. No time to look into it further...
-      const tmpDate = date.split(".");
-      return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format(
-        "MM"
-      );
-    }
-  },
   async mounted() {
     // TODO: Load static file from URL to reduce bundle size
     const tmp = await import(`@/utils/rosters/${this.roster}.json`);
     this.rosterData = tmp.default;
   },
   methods: {
+    rosterWeekDay,
+    rosterNumberDay,
+    rosterNumberMonth,
     isActive(appointment) {
       const tmpDate = appointment.Datum.split(".");
       const date = momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`);
@@ -90,17 +75,6 @@ export default {
       const isSameMonth = date.isSame(momentInstance(new Date()), "month");
       return isSameDay && isSameMonth;
     }
-  },
-  metaInfo() {
-    return {
-      title: "Feuerwehr Mühltal Traisa | Dienstplan",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Dienstplan"
-        }
-      ]
-    };
   }
 };
 </script>
