@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sideBarEntry mb-3" v-if="!isLoading">
+    <div class="sideBarEntry mb-3" v-if="!isLoading && latestAlarm">
       <div class="headline font-weight-bold">Letzter Einsatz</div>
       <div class="sideBarEntry__body">
         <router-link
@@ -10,7 +10,7 @@
         >
       </div>
     </div>
-    <div class="calendar" v-if="!isLoading">
+    <div class="calendar" v-if="!isLoading && nextThreeMeetings">
       <div class="headline calendar__headline font-weight-bold">
         Termine
         <router-link to="/termine" class="link">zu allen Terminen</router-link>
@@ -22,13 +22,13 @@
           :key="index"
         >
           <v-col class="calendar__date">
-            <span>{{ meeting.date.timestamp | weekDay }}</span>
-            <span>{{ meeting.date.timestamp | numberDay }}</span>
+            <span>{{ formatWeekDay(meeting.date.timestamp) }}</span>
+            <span>{{ formatNumberDay(meeting.date.timestamp) }}</span>
           </v-col>
           <v-col class="calender__info" style="padding: 0; position: relative">
             <div>{{ meeting.post_title }}</div>
-            <div class="subtitle-2 calendar__detail-date">
-              {{ meeting.date.timestamp | date }}
+            <div class="text-subtitle-2 calendar__detail-date">
+              {{ formatDate(meeting.date.timestamp) }}
             </div>
           </v-col>
         </v-row>
@@ -53,42 +53,19 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { momentInstance } from "@/utils/moment";
+import { mapState } from "pinia";
+import { useSideBarStore } from "@/store/modules/sideBar";
+import { formatDate, formatWeekDay, formatNumberDay } from "@/utils/dateFilters";
 
 export default {
   name: "Sidebar",
-  filters: {
-    date(date) {
-      return (
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("DD MMMM") +
-        " um " +
-        momentInstance(parseInt(date) * 1000)
-          .utc()
-          .format("HH:mm")
-      );
-    },
-    weekDay(date) {
-      return momentInstance(parseInt(date) * 1000)
-        .utc()
-        .format("dd")
-        .toUpperCase();
-    },
-    numberDay(date) {
-      return momentInstance(parseInt(date) * 1000)
-        .utc()
-        .format("DD");
-    }
-  },
   computed: {
-    ...mapGetters("sideBar", {
-      isLoading: "isLoading",
-      sideBarPosts: "sideBarPosts",
-      latestAlarm: "latestAlarm",
-      nextThreeMeetings: "nextThreeMeetings"
-    })
+    ...mapState(useSideBarStore, ["isLoading", "sideBarPosts", "latestAlarm", "nextThreeMeetings"])
+  },
+  methods: {
+    formatDate,
+    formatWeekDay,
+    formatNumberDay
   }
 };
 </script>

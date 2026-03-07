@@ -1,46 +1,24 @@
+import { defineStore } from "pinia";
 import api from "../../api";
-import * as types from "../mutation-types";
 
-// initial state
-const state = {
-  isLoading: false,
-  data: []
-};
-
-// getters
-const getters = {
-  isLoading: state => state.isLoading,
-  latestAlarm: state => state.data.latestAlarm,
-  nextThreeMeetings: state => state.data.nextThreeMeetings,
-  sideBarPosts: state => state.data.sideBarPosts
-};
-
-// actions
-const actions = {
-  getSidebarInfo({ commit }) {
-    commit(types.UPDATE_LOADING_STATE, true);
-    api.getSidebarInfo(info => {
-      commit(types.STORE_FETCHED_SIDEBAR, info);
-      commit(types.UPDATE_LOADING_STATE, false);
-    });
-  }
-};
-
-// mutations
-const mutations = {
-  [types.STORE_FETCHED_SIDEBAR](state, data) {
-    state.data = data;
+export const useSideBarStore = defineStore("sideBar", {
+  state: () => ({
+    isLoading: false,
+    data: {}
+  }),
+  getters: {
+    getIsLoading: state => state.isLoading,
+    latestAlarm: state => state.data.latestAlarm,
+    nextThreeMeetings: state => state.data.nextThreeMeetings,
+    sideBarPosts: state => state.data.sideBarPosts
   },
-
-  [types.UPDATE_LOADING_STATE](state, val) {
-    state.isLoading = val;
+  actions: {
+    getSidebarInfo() {
+      this.isLoading = true;
+      api.getSidebarInfo(info => {
+        if (info && !(info instanceof Error)) this.data = info;
+        this.isLoading = false;
+      });
+    }
   }
-};
-
-export default {
-  namespaced: true,
-  state,
-  getters,
-  actions,
-  mutations
-};
+});

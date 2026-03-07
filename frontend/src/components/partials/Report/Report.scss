@@ -4,12 +4,23 @@
   &__headline {
     color: #fff;
     padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin-bottom: 40px;
     position: relative;
     background-color: #af4a45;
     height: auto;
     min-height: 50px;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin: 0;
+      color: #fff;
+    }
     &::after {
       position: absolute;
       width: 0;

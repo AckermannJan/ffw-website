@@ -14,13 +14,14 @@
           Object.keys(pageDetails.attached_images).length > 0 &&
             parseInt(pageDetails.any_attached_images) === 1
         "
-        show-arrows-on-hover
+        show-arrows="hover"
       >
         <v-carousel-item
           v-for="(item, i) in pageDetails.attached_images"
           :key="i"
-          :src="item"
-        ></v-carousel-item>
+        >
+          <v-img :src="item" height="100%"></v-img>
+        </v-carousel-item>
       </v-carousel>
     </template>
     <Loader v-else />
@@ -29,15 +30,21 @@
 
 <script>
 import Loader from "../components/partials/Loader.vue";
-import { mapGetters, mapActions } from "vuex";
-import Report from "../components/partials/Report/Report";
+import { mapState, mapActions } from "pinia";
+import { usePageStore } from "@/store/modules/page";
+import { useHead } from "@unhead/vue";
+import { computed } from "vue";
+import Report from "../components/partials/Report/Report.vue";
 
 export default {
+  setup() {
+    const pageStore = usePageStore();
+    useHead({
+      title: computed(() => "Feuerwehr Mühltal Traisa | " + (pageStore.pageDetails.post_title || ""))
+    });
+  },
   computed: {
-    ...mapGetters("page", {
-      pageDetails: "pageDetails",
-      isLoading: "isLoading"
-    })
+    ...mapState(usePageStore, ["pageDetails", "isLoading"])
   },
   props: {
     slug: {
@@ -48,18 +55,11 @@ export default {
     this.getPageById(this.slug || this.$route.params.pageSlug);
   },
   methods: {
-    ...mapActions("page", {
-      getPageById: "getPageById"
-    })
+    ...mapActions(usePageStore, ["getPageById"])
   },
   components: {
     Report,
     Loader
-  },
-  metaInfo() {
-    return {
-      title: "Feuerwehr Mühltal Traisa | " + this.pageDetails.post_title
-    };
   }
 };
 </script>

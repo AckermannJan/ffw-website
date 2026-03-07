@@ -1,5 +1,58 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap");
 
 body {
   font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+}
+
+/* Vuetify 2 compat: .headline was 1.5rem/2rem heading class, removed in Vuetify 3 */
+.headline {
+  font-size: 1.5rem !important;
+  font-weight: 400;
+  line-height: 2rem;
+  letter-spacing: normal !important;
+}
+
+/* ─── CMS content area ─────────────────────────────────────────────────────── */
+/* WordPress editor often injects inline font-family (tahoma/arial) and
+   arbitrary font-size values (10pt, 8pt). Override both globally inside
+   the rendered content area. */
+
+.report__content {
+  /* Force Open Sans throughout — overrides WP inline font-family */
+  font-family: "Open Sans", sans-serif !important;
+}
+
+.report__content * {
+  font-family: "Open Sans", sans-serif !important;
+}
+
+/* Normalize WP editor inline font sizes (10pt = 13.3px, 8pt = 10.7px → 1rem) */
+.report__content p,
+.report__content span,
+.report__content li,
+.report__content td {
+  font-size: 1rem !important;
+  line-height: 1.6;
+}
+
+/* Paragraph spacing (Vuetify resets margins to 0) */
+.report__content p {
+  margin-bottom: 0.85rem;
+}
+
+/* Consistent heading scale inside CMS content */
+.report__content h1 { font-size: 1.75rem; font-weight: 700; margin: 1rem 0 0.5rem; }
+.report__content h2 { font-size: 1.5rem;  font-weight: 700; margin: 1rem 0 0.5rem; }
+.report__content h3 { font-size: 1.2rem;  font-weight: 700; margin: 0.75rem 0 0.5rem; }
+.report__content h4 { font-size: 1rem;    font-weight: 700; margin: 0.5rem 0 0.25rem; }
+
+/* Links: replace browser-default blue / WP inline color with site color */
+.report__content a {
+  color: #af4a45 !important;
+  text-decoration: none !important;
+}
+
+.report__content a:hover {
+  text-decoration: underline !important;
 }

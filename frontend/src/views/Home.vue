@@ -9,7 +9,7 @@
     >
       <v-col
         class="page__img"
-        v-if="['lg', 'xl', 'md'].includes($vuetify.breakpoint.name)"
+        v-if="['lg', 'xl', 'md'].includes(breakpointName)"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -28,17 +28,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import WelcomeMsg from "../components/partials/WelcomeMsg";
+import { mapState } from "pinia";
+import { useIndexStore } from "@/store/modules/index";
+import { useDisplay } from "vuetify";
+import WelcomeMsg from "../components/partials/WelcomeMsg.vue";
 
 export default {
   name: "Home",
   components: { WelcomeMsg },
+  setup() {
+    const { name } = useDisplay();
+    return { breakpointName: name };
+  },
   computed: {
-    ...mapGetters("index", {
-      isLoading: "isLoading",
-      pages: "pages"
-    })
+    ...mapState(useIndexStore, [
+
+  "isLoading", "pages"
+    ])
   }
 };
 </script>
@@ -57,7 +63,8 @@ export default {
   &__text {
     border-left: solid 10px #af4a45;
     position: relative;
-    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
     &--hide {
       text-overflow: ellipsis;
       max-height: 190px;
@@ -86,13 +93,10 @@ export default {
 }
 
 .btn {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: {
-    right: 15px;
-    bottom: 15px;
-  }
+  align-self: flex-end;
+  margin-top: auto;
+  margin-right: 15px;
+  margin-bottom: 15px;
   color: #fff;
 }
 </style>

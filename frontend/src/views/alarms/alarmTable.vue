@@ -5,11 +5,11 @@
         <Report>
           <template v-slot:headline>
             Einsätze
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
-                <div v-on="on" style="display: inline-block; cursor: pointer">
+            <v-menu location="bottom" open-on-hover>
+              <template v-slot:activator="{ props }">
+                <div v-bind="props" style="display: inline-block; cursor: pointer">
                   {{ selectedYear
-                  }}<v-icon large color="#fff">mdi-chevron-down</v-icon>
+                  }}<v-icon size="large" color="#fff">mdi-chevron-down</v-icon>
                 </div>
               </template>
               <v-list>
@@ -41,7 +41,7 @@
                 :key="index"
                 class="removeLink"
               >
-                <v-row>
+                <v-row class="mb-4">
                   <v-col cols="1">
                     <v-icon
                       color="#fff"
@@ -73,9 +73,9 @@
                   >
                   <v-col
                     cols="2"
-                    v-if="['lg', 'xl', 'md'].includes($vuetify.breakpoint.name)"
+                    v-if="['lg', 'xl', 'md'].includes(breakpointName)"
                     ><b>{{
-                      alarm.alarmierungszeitpunkt.timestamp | date
+                      formatAlarmDate(alarm.alarmierungszeitpunkt.timestamp)
                     }}</b></v-col
                   >
                 </v-row>
@@ -83,17 +83,19 @@
             </div>
             <div v-else>
               <v-row align="center" v-for="index in 10" :key="index">
-                <v-col cols="1">
+                <v-col>
                   <v-skeleton-loader
-                    type="image"
-                    style="height: 40px"
+                    type="text"
+                    color="transparent"
+                    class="alarm-skeleton__text"
                   ></v-skeleton-loader>
                 </v-col>
-                <v-col>
-                  <v-skeleton-loader type="text"></v-skeleton-loader>
-                </v-col>
                 <v-col cols="2">
-                  <v-skeleton-loader type="text"></v-skeleton-loader>
+                  <v-skeleton-loader
+                    type="text"
+                    color="transparent"
+                    class="alarm-skeleton__text"
+                  ></v-skeleton-loader>
                 </v-col>
               </v-row>
             </div>
@@ -105,24 +107,26 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import Report from "../../components/partials/Report/Report";
-import { momentInstance } from "@/utils/moment";
+import { mapState, mapActions } from "pinia";
+import { useAlarmsStore } from "@/store/modules/alarms";
+import { useDisplay } from "vuetify";
+import { useHead } from "@unhead/vue";
+import { formatAlarmDate } from "@/utils/dateFilters";
+import Report from "../../components/partials/Report/Report.vue";
 
 export default {
   name: "alarmTable",
   components: { Report },
-  filters: {
-    date(date) {
-      momentInstance().locale("de");
-      return momentInstance(parseInt(date) * 1000).format("DD.MM.YYYY");
-    }
+  setup() {
+    const { name } = useDisplay();
+    useHead({
+      title: "Feuerwehr Mühltal Traisa | Einsätze",
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Einsätze" }]
+    });
+    return { breakpointName: name };
   },
   computed: {
-    ...mapGetters("alarms", {
-      alarms: "alarms",
-      isLoading: "isLoading"
-    }),
+    ...mapState(useAlarmsStore, ["alarms", "isLoading"]),
     selectableYears() {
       const currentYear = new Date().getFullYear();
       const firstYear = parseInt(this.firstYear);
@@ -143,27 +147,28 @@ export default {
     this.getAllAlarmsFromYear(this.selectedYear);
   },
   methods: {
-    ...mapActions("alarms", {
-      getAllAlarmsFromYear: "getAllAlarmsFromYear"
-    }),
+    ...mapActions(useAlarmsStore, ["getAllAlarmsFromYear"]),
+    formatAlarmDate,
     selectYear(year) {
       this.selectedYear = year;
       this.getAllAlarmsFromYear(year);
     }
-  },
-  metaInfo() {
-    return {
-      title: "Feuerwehr Mühltal Traisa | Einsätze",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Einsätze"
-        }
-      ]
-    };
   }
 };
 </script>
+
+<style>
+.alarm-skeleton__text .v-skeleton-loader__text {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.alarm-skeleton__text .v-skeleton-loader__paragraph {
+  background-color: rgba(255, 255, 255, 0) !important;
+  &::after { display: none; }
+}
+</style>
 
 <style scoped lang="scss">
 .circle {

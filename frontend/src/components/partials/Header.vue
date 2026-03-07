@@ -1,68 +1,53 @@
 <template>
   <v-container fluid class="customContainer">
     <v-navigation-drawer v-model="drawer" absolute temporary>
-      <v-list nav dense>
-        <v-list-item-group>
-          <v-list-item to="/">
-            <v-list-item-title>Startseite</v-list-item-title>
-          </v-list-item>
+      <v-list nav density="compact">
+        <v-list-item to="/">
+          <v-list-item-title>Startseite</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item to="/seite/verein">
-            <v-list-item-title>Verein</v-list-item-title>
-          </v-list-item>
+        <v-list-item to="/seite/verein">
+          <v-list-item-title>Verein</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item to="/einsatzabteilung/einsatze">
-            <v-list-item-title>Einsätze</v-list-item-title>
-          </v-list-item>
+        <v-list-item to="/einsatzabteilung/einsatze">
+          <v-list-item-title>Einsätze</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item to="/einsatzabteilung" exact>
-            <v-list-item-title>Einsatzabteilung</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/einsatzabteilung/dienstplan">
-            <v-list-item-icon style="margin-right: 10px">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Dienstplan</v-list-item-title>
-          </v-list-item>
+        <v-list-item to="/einsatzabteilung" exact>
+          <v-list-item-title>Einsatzabteilung</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/einsatzabteilung/dienstplan" prepend-icon="mdi-chevron-right">
+          <v-list-item-title>Dienstplan</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item to="/kindergruppen">
-            <v-list-item-title>Nachwuchs</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/kindergruppen/wichtelwehr">
-            <v-list-item-icon style="margin-right: 10px">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Wichtelwehr</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            to="/kindergruppen/wichtelwehr/uebungsplanwichtel"
-            style="padding-left: 35px;"
-          >
-            <v-list-item-icon style="margin-right: 10px">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Übungsplan</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/kindergruppen/jugendfeuerwehr">
-            <v-list-item-icon style="margin-right: 10px">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            to="/kindergruppen/jugendfeuerwehr/uebungsplan"
-            style="padding-left: 35px;"
-          >
-            <v-list-item-icon style="margin-right: 10px">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Übungsplan</v-list-item-title>
-          </v-list-item>
+        <v-list-item to="/kindergruppen">
+          <v-list-item-title>Nachwuchs</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/kindergruppen/wichtelwehr" prepend-icon="mdi-chevron-right">
+          <v-list-item-title>Wichtelwehr</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          to="/kindergruppen/wichtelwehr/uebungsplanwichtel"
+          style="padding-left: 35px;"
+          prepend-icon="mdi-chevron-right"
+        >
+          <v-list-item-title>Übungsplan</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/kindergruppen/jugendfeuerwehr" prepend-icon="mdi-chevron-right">
+          <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          to="/kindergruppen/jugendfeuerwehr/uebungsplan"
+          style="padding-left: 35px;"
+          prepend-icon="mdi-chevron-right"
+        >
+          <v-list-item-title>Übungsplan</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item to="/technik">
-            <v-list-item-title>Technik</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item to="/technik">
+          <v-list-item-title>Technik</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -85,28 +70,27 @@
         style="background-color: #af4a45"
       >
         <v-row
-          v-if="['md', 'lg', 'xl'].includes(this.$vuetify.breakpoint.name)"
+          v-if="['md', 'lg', 'xl'].includes(breakpointName)"
           no-gutters
           align="center"
           style="height: 55px; text-align: center"
         >
           <v-col style="max-width: 50px">
             <router-link to="/" style="text-decoration: none">
-              <v-icon large color="#fff" style="margin-left: 15px"
+              <v-icon size="large" color="#fff" style="margin-left: 15px"
                 >mdi-home</v-icon
               >
             </router-link>
           </v-col>
           <v-col>
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
+            <v-menu location="bottom" open-on-hover>
+              <template v-slot:activator="{ props }">
                 <v-btn
                   color="white"
-                  v-on="on"
-                  text
+                  v-bind="props"
+                  variant="text"
                   :ripple="false"
-                  depressed
-                  large
+                  size="large"
                   to="/seite/verein"
                 >
                   Verein
@@ -124,25 +108,23 @@
           <v-col>
             <v-btn
               color="white"
-              text
+              variant="text"
               :ripple="false"
-              depressed
-              large
+              size="large"
               to="/einsatzabteilung/einsatze"
             >
               Einsätze
             </v-btn>
           </v-col>
           <v-col>
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
+            <v-menu location="bottom" open-on-hover>
+              <template v-slot:activator="{ props }">
                 <v-btn
                   color="white"
-                  v-on="on"
-                  text
+                  v-bind="props"
+                  variant="text"
                   :ripple="false"
-                  depressed
-                  large
+                  size="large"
                   to="/einsatzabteilung"
                   exact
                 >
@@ -157,15 +139,14 @@
             </v-menu>
           </v-col>
           <v-col>
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
+            <v-menu location="bottom" open-on-hover>
+              <template v-slot:activator="{ props }">
                 <v-btn
                   color="white"
-                  v-on="on"
-                  text
+                  v-bind="props"
+                  variant="text"
                   :ripple="false"
-                  depressed
-                  large
+                  size="large"
                   to="/kindergruppen"
                 >
                   Nachwuchs
@@ -194,10 +175,9 @@
           <v-col>
             <v-btn
               color="white"
-              text
+              variant="text"
               :ripple="false"
-              depressed
-              large
+              size="large"
               to="/technik"
             >
               Technik
@@ -205,14 +185,14 @@
           </v-col>
         </v-row>
         <v-row
-          v-if="['xs', 'sm'].includes(this.$vuetify.breakpoint.name)"
+          v-if="['xs', 'sm'].includes(breakpointName)"
           no-gutters
           align="center"
           style="height: 55px; text-align: center"
         >
           <v-col cols="1">
             <v-icon
-              large
+              size="large"
               color="#fff"
               @click="toggleDrawer"
               style="margin-left: 15px;"
@@ -226,10 +206,15 @@
 </template>
 
 <script>
+import { useDisplay } from "vuetify";
+
 export default {
+  setup() {
+    const { name } = useDisplay();
+    return { breakpointName: name };
+  },
   data: () => ({
-    drawer: false,
-    group: null
+    drawer: false
   }),
   methods: {
     toggleDrawer() {
