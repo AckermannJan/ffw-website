@@ -62,15 +62,19 @@ export default {
   },
   async mounted() {
     try {
-      const url = `${settings.ROSTER_BASE_URL}/${this.roster}.json`;
-      const res = await fetch(url);
+      const res = await fetch(settings.ROSTER_API_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      this.rosterData = await res.json();
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        this.rosterData = data;
+        return;
+      }
     } catch {
-      // Fallback to bundled static file (dev environment / plugin not yet deployed)
-      const tmp = await import(`@/utils/rosters/${this.roster}.json`);
-      this.rosterData = tmp.default;
+      // fall through to local fallback
     }
+    // Fallback to bundled static file (dev environment / plugin not yet deployed)
+    const tmp = await import(`@/utils/rosters/${this.roster}.json`);
+    this.rosterData = tmp.default;
   },
   methods: {
     rosterWeekDay,
