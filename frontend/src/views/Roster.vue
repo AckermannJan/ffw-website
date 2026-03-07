@@ -35,6 +35,7 @@
 import { momentInstance } from "@/utils/moment";
 import { useHead } from "@unhead/vue";
 import { rosterWeekDay, rosterNumberDay, rosterNumberMonth } from "@/utils/dateFilters";
+import settings from "@/settings";
 
 export default {
   name: "Termine",
@@ -60,9 +61,16 @@ export default {
     roster: null
   },
   async mounted() {
-    // TODO: Load static file from URL to reduce bundle size
-    const tmp = await import(`@/utils/rosters/${this.roster}.json`);
-    this.rosterData = tmp.default;
+    try {
+      const url = `${settings.ROSTER_BASE_URL}/${this.roster}.json`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      this.rosterData = await res.json();
+    } catch {
+      // Fallback to bundled static file (dev environment / plugin not yet deployed)
+      const tmp = await import(`@/utils/rosters/${this.roster}.json`);
+      this.rosterData = tmp.default;
+    }
   },
   methods: {
     rosterWeekDay,
