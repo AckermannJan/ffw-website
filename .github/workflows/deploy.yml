@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        working-directory: frontend
+        run: yarn build
+
+      - name: Deploy frontend via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: 'stu837001104'
+          server: '59056197.ssh.w1.strato.hosting'
+          port: '22'
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local_path: './frontend/dist/*'
+          remote_path: '/vue/'
+          sftp_only: true
+
+      - name: Deploy WordPress theme via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: 'stu837001104'
+          server: '59056197.ssh.w1.strato.hosting'
+          port: '22'
+          password: ${{ secrets.SFTP_PASSWORD }}
+          local_path: './wpTheme/*'
+          remote_path: '/WordPress_01/wp-content/themes/headless-ffw/'
+          sftp_only: true
