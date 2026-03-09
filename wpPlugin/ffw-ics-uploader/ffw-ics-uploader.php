@@ -172,6 +172,25 @@ function ffw_convert_ics_to_roster( string $raw ): array {
     return $roster;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Stable key for an entry, used to track visibility. */
+function ffw_entry_key( array $entry ): string {
+    return md5( ( $entry['Datum'] ?? '' ) . '|' . ( $entry['von'] ?? '' ) );
+}
+
+/** Load all entries from the JSON file. Returns [] if file missing/invalid. */
+function ffw_load_roster(): array {
+    if ( ! file_exists( FFW_ROSTER_FILE ) ) return [];
+    $roster = json_decode( file_get_contents( FFW_ROSTER_FILE ), true );
+    return is_array( $roster ) ? $roster : [];
+}
+
+/** Return the set of hidden entry keys. */
+function ffw_hidden_keys(): array {
+    return (array) get_option( 'ffw_hidden_roster_entries', [] );
+}
+
 // ─── Admin Menu ───────────────────────────────────────────────────────────────
 
 add_action( 'admin_menu', function () {
@@ -254,6 +273,29 @@ function ffw_handle_upload(): array {
     ];
 }
 
+// ─── Handle Visibility Toggle ─────────────────────────────────────────────────
+
+function ffw_handle_toggle(): void {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Keine Berechtigung.' );
+    }
+
+    check_admin_referer( 'ffw_toggle_entry' );
+
+    $key    = sanitize_text_field( $_POST['entry_key'] ?? '' );
+    if ( $key === '' ) return;
+
+    $hidden = ffw_hidden_keys();
+
+    if ( in_array( $key, $hidden, true ) ) {
+        $hidden = array_values( array_filter( $hidden, fn( $k ) => $k !== $key ) );
+    } else {
+        $hidden[] = $key;
+    }
+
+    update_option( 'ffw_hidden_roster_entries', $hidden );
+}
+
 // ─── Admin Page Renderer ──────────────────────────────────────────────────────
 
 function ffw_render_admin_page(): void {
@@ -261,9 +303,13 @@ function ffw_render_admin_page(): void {
         wp_die( 'Keine Berechtigung.' );
     }
 
-    $result = null;
+    $upload_result = null;
     if ( isset( $_POST['ffw_ics_submit'] ) ) {
-        $result = ffw_handle_upload();
+        $upload_result = ffw_handle_upload();
+    }
+
+    if ( isset( $_POST['ffw_toggle_submit'] ) ) {
+        ffw_handle_toggle();
     }
 
     // Load current meta if available
@@ -272,37 +318,35 @@ function ffw_render_admin_page(): void {
         $meta = json_decode( file_get_contents( FFW_ROSTER_META ), true );
     }
 
-    $roster_url = FFW_ROSTER_URL . '/' . FFW_ROSTER_FILENAME;
+    $roster     = ffw_load_roster();
+    $hidden     = ffw_hidden_keys();
+    $page_url   = admin_url( 'tools.php?page=ffw-ics-uploader' );
     ?>
     <div class="wrap">
         <h1>ICS Dienstplan Upload</h1>
         <p>Lade eine <code>.ics</code>-Datei hoch, um den Dienstplan (<code>eAbtRoster.json</code>) zu aktualisieren.</p>
 
-        <?php if ( $result !== null ): ?>
-            <?php if ( isset( $result['error'] ) ): ?>
-                <div class="notice notice-error">
-                    <p><strong>Fehler:</strong> <?php echo esc_html( $result['error'] ); ?></p>
+        <?php if ( $upload_result !== null ): ?>
+            <?php if ( isset( $upload_result['error'] ) ): ?>
+                <div class="notice notice-error is-dismissible">
+                    <p><strong>Fehler:</strong> <?php echo esc_html( $upload_result['error'] ); ?></p>
                 </div>
             <?php else: ?>
-                <div class="notice notice-success">
+                <div class="notice notice-success is-dismissible">
                     <p>
                         <strong>Erfolgreich hochgeladen!</strong>
-                        <?php echo esc_html( $result['count'] ); ?> Termine gespeichert.
-                        <br>
-                        URL: <a href="<?php echo esc_url( $result['url'] ); ?>" target="_blank"><?php echo esc_html( $result['url'] ); ?></a>
+                        <?php echo esc_html( $upload_result['count'] ); ?> Termine importiert.
                     </p>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
 
-        <?php if ( $meta !== null && $result === null ): ?>
+        <?php if ( $meta !== null && $upload_result === null ): ?>
             <div class="notice notice-info">
                 <p>
                     <strong>Letzter Upload:</strong> <?php echo esc_html( $meta['updated'] ); ?>
                     &mdash; <?php echo esc_html( $meta['count'] ); ?> Termine
                     &mdash; Quelle: <?php echo esc_html( $meta['source'] ); ?>
-                    <br>
-                    URL: <a href="<?php echo esc_url( $roster_url ); ?>" target="_blank"><?php echo esc_html( $roster_url ); ?></a>
                 </p>
             </div>
         <?php endif; ?>
@@ -311,24 +355,81 @@ function ffw_render_admin_page(): void {
             <?php wp_nonce_field( 'ffw_ics_upload' ); ?>
             <table class="form-table" role="presentation">
                 <tr>
-                    <th scope="row">
-                        <label for="ics_file">ICS-Datei</label>
-                    </th>
+                    <th scope="row"><label for="ics_file">ICS-Datei</label></th>
                     <td>
-                        <input
-                            type="file"
-                            id="ics_file"
-                            name="ics_file"
-                            accept=".ics,text/calendar"
-                            required
-                            style="font-size: 1em;"
-                        >
+                        <input type="file" id="ics_file" name="ics_file"
+                               accept=".ics,text/calendar" required style="font-size: 1em;">
                         <p class="description">Erlaubtes Format: <code>.ics</code> (iCalendar)</p>
                     </td>
                 </tr>
             </table>
             <?php submit_button( 'Dienstplan hochladen & konvertieren', 'primary', 'ffw_ics_submit' ); ?>
         </form>
+
+        <?php if ( ! empty( $roster ) ): ?>
+            <hr>
+            <h2>
+                Alle Termine
+                <span style="font-size: 0.75em; font-weight: normal; color: #666;">
+                    (<?php echo esc_html( count( $roster ) ); ?> gesamt,
+                     <?php echo esc_html( count( $hidden ) ); ?> ausgeblendet)
+                </span>
+            </h2>
+            <p class="description">
+                Ausgeblendete Termine werden im Frontend nicht angezeigt, aber nicht gelöscht.
+                Sie bleiben beim nächsten Upload erhalten, solange die Kombination aus Datum und Uhrzeit identisch ist.
+            </p>
+
+            <style>
+                .ffw-roster-table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+                .ffw-roster-table th,
+                .ffw-roster-table td { padding: 7px 10px; border: 1px solid #c3c4c7; text-align: left; vertical-align: middle; }
+                .ffw-roster-table th { background: #f0f0f1; }
+                .ffw-roster-table tr.ffw-hidden td { opacity: 0.45; }
+                .ffw-roster-table td.ffw-action { white-space: nowrap; }
+            </style>
+
+            <table class="ffw-roster-table widefat">
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Von</th>
+                        <th>Bis</th>
+                        <th>Thema</th>
+                        <th>Art</th>
+                        <th>Ort</th>
+                        <th>Dauer</th>
+                        <th>Sichtbarkeit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ( $roster as $entry ):
+                    $key     = ffw_entry_key( $entry );
+                    $is_hidden = in_array( $key, $hidden, true );
+                ?>
+                    <tr class="<?php echo $is_hidden ? 'ffw-hidden' : ''; ?>">
+                        <td><?php echo esc_html( $entry['Datum'] ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['von']   ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['bis']   ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['Thema'] ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['Art']   ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['Ortsteil-Feuerwehr'] ?? '' ); ?></td>
+                        <td><?php echo esc_html( $entry['Dauer'] ?? '' ); ?></td>
+                        <td class="ffw-action">
+                            <form method="post" action="<?php echo esc_url( $page_url ); ?>">
+                                <?php wp_nonce_field( 'ffw_toggle_entry' ); ?>
+                                <input type="hidden" name="entry_key" value="<?php echo esc_attr( $key ); ?>">
+                                <button type="submit" name="ffw_toggle_submit"
+                                        class="button button-small <?php echo $is_hidden ? 'button-primary' : ''; ?>">
+                                    <?php echo $is_hidden ? 'Einblenden' : 'Ausblenden'; ?>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
 
         <hr>
         <h2>Technische Details</h2>
@@ -343,7 +444,7 @@ function ffw_render_admin_page(): void {
 
 // ─── REST Endpoint: GET /wp-json/types/v1/getRoster/ ─────────────────────────
 // Returns the roster JSON array directly so the frontend avoids CORS issues
-// with direct file access.
+// with direct file access. Hidden entries are excluded.
 
 add_action( 'rest_api_init', function () {
     register_rest_route( 'types/v1', '/getRoster/', [
@@ -354,16 +455,15 @@ add_action( 'rest_api_init', function () {
 } );
 
 function ffw_rest_get_roster(): WP_REST_Response {
-    if ( ! file_exists( FFW_ROSTER_FILE ) ) {
+    $roster = ffw_load_roster();
+    if ( empty( $roster ) ) {
         return new WP_REST_Response( [], 200 );
     }
 
-    $content = file_get_contents( FFW_ROSTER_FILE );
-    $roster  = json_decode( $content, true );
+    $hidden  = ffw_hidden_keys();
+    $visible = array_values(
+        array_filter( $roster, fn( $e ) => ! in_array( ffw_entry_key( $e ), $hidden, true ) )
+    );
 
-    if ( ! is_array( $roster ) ) {
-        return new WP_REST_Response( [], 200 );
-    }
-
-    return new WP_REST_Response( $roster, 200 );
+    return new WP_REST_Response( $visible, 200 );
 }
