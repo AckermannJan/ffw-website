@@ -6,21 +6,21 @@ export const usePageStore = defineStore("page", {
     pageDetails: {
       title: {},
       content: {},
-      attached_images: []
+      attached_images: [],
     },
-    isLoading: false
+    isLoading: false,
   }),
   getters: {
-    getPageDetails: state => state.pageDetails,
-    getIsLoading: state => state.isLoading
+    getPageDetails: (state) => state.pageDetails,
+    getIsLoading: (state) => state.isLoading,
   },
   actions: {
     getPageById(id) {
       this.isLoading = true;
-      api.getPage(id, res => {
+      api.getPage(id, (res) => {
         this.pageDetails = res;
         this.isLoading = false;
       });
-    }
-  }
+    },
+  },
 });

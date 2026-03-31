@@ -43,11 +43,15 @@ export function rosterWeekDay(date) {
 export function rosterNumberDay(date) {
   if (!date) return;
   const tmpDate = date.split(".");
-  return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format("DD");
+  return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format(
+    "DD",
+  );
 }
 
 export function rosterNumberMonth(date) {
   if (!date) return;
   const tmpDate = date.split(".");
-  return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format("MM");
+  return momentInstance(`${tmpDate[1]}.${tmpDate[0]}.${tmpDate[2]}`).format(
+    "MM",
+  );
 }

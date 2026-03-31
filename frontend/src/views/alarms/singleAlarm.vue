@@ -29,7 +29,7 @@
             ><v-icon size="60" color="#000">mdi-fire-truck</v-icon></v-col
           >
           <v-col>
-            <div class="car" v-for="car in alarm.fahrzeuge" :key="car">
+            <div v-for="car in alarm.fahrzeuge" :key="car" class="car">
               <img :src="carImages[car].img" :alt="carImages[car].alt" />
             </div>
             <div class="headline mb-4"><b>EINSATZPERSONAL</b></div>
@@ -44,20 +44,17 @@
               >mdi-clipboard-text-outline</v-icon
             ></v-col
           >
-          <v-col v-html="alarm.post_content_html" class="mb-3" />
+          <v-col class="mb-3" v-html="alarm.post_content_html" />
         </v-row>
         <v-carousel
           v-if="
             Object.keys(alarm.medienbilder).length > 0 &&
-              Object.values(alarm.medienbilder)[0] !== ''
+            Object.values(alarm.medienbilder)[0] !== ''
           "
           height="430"
           show-arrows="hover"
         >
-          <v-carousel-item
-            v-for="(item, i) in alarm.medienbilder"
-            :key="i"
-          >
+          <v-carousel-item v-for="(item, i) in alarm.medienbilder" :key="i">
             <v-img :src="item" height="100%"></v-img>
           </v-carousel-item>
         </v-carousel>
@@ -76,13 +73,16 @@ import { formatDate } from "@/utils/dateFilters";
 import Loader from "../../components/partials/Loader.vue";
 
 export default {
-  name: "singleAlarm",
+  name: "SingleAlarm",
   components: { Loader },
   setup() {
     const alarmsStore = useAlarmsStore();
     useHead({
-      title: computed(() => "Feuerwehr Mühltal Traisa | " + (alarmsStore.alarm.post_title || "")),
-      meta: [{ name: "robots", content: "nofollow" }]
+      title: computed(
+        () =>
+          "Feuerwehr Mühltal Traisa | " + (alarmsStore.alarm.post_title || ""),
+      ),
+      meta: [{ name: "robots", content: "nofollow" }],
     });
   },
   data() {
@@ -90,50 +90,44 @@ export default {
       carImages: {
         1: {
           alt: "MTF",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2016/08/Vorsschaukleinnn.png"
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2016/08/Vorsschaukleinnn.png",
         },
         2: {
           alt: "LF/8",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/lf86.jpg"
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/lf86.jpg",
         },
         3: {
           alt: "LF/10",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/lf106.jpg"
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/lf106.jpg",
         },
         4: {
           alt: "Anhänger",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/anhaenger.jpg"
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/anhaenger.jpg",
         },
         5: {
           alt: "KdoW",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/kdow.jpg"
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/themes/FFW/imgs/cars/kdow.jpg",
         },
         6: {
           alt: "MLF",
-          img:
-            "https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2025/05/MLF_Icon.png"
-        }
-      }
+          img: "https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2025/05/MLF_Icon.png",
+        },
+      },
     };
   },
   computed: {
     ...mapState(useAlarmsStore, {
       alarm: "alarm",
-      isLoading: "isAlarmLoading"
-    })
+      isLoading: "isAlarmLoading",
+    }),
   },
   mounted() {
     this.getAlarm(this.$route.params.pageSlug);
   },
   methods: {
     ...mapActions(useAlarmsStore, ["getAlarm"]),
-    formatDate
-  }
+    formatDate,
+  },
 };
 </script>
 

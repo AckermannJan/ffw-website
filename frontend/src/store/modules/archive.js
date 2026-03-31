@@ -4,19 +4,19 @@ import api from "../../api";
 export const useArchiveStore = defineStore("archive", {
   state: () => ({
     archive: {},
-    isLoading: false
+    isLoading: false,
   }),
   getters: {
-    archiveData: state => state.archive,
-    getIsLoading: state => state.isLoading
+    archiveData: (state) => state.archive,
+    getIsLoading: (state) => state.isLoading,
   },
   actions: {
     loadArchive() {
       this.isLoading = true;
-      api.getArchive(res => {
+      api.getArchive((res) => {
         this.archive = res;
         this.isLoading = false;
       });
-    }
-  }
+    },
+  },
 });

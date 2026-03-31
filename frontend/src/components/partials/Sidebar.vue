@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sideBarEntry mb-3" v-if="!isLoading && latestAlarm">
+    <div v-if="!isLoading && latestAlarm" class="sideBarEntry mb-3">
       <div class="headline font-weight-bold">Letzter Einsatz</div>
       <div class="sideBarEntry__body">
         <router-link
@@ -10,16 +10,16 @@
         >
       </div>
     </div>
-    <div class="calendar" v-if="!isLoading && nextThreeMeetings">
+    <div v-if="!isLoading && nextThreeMeetings" class="calendar">
       <div class="headline calendar__headline font-weight-bold">
         Termine
         <router-link to="/termine" class="link">zu allen Terminen</router-link>
       </div>
       <div class="calendar__body">
         <v-row
-          class="calendar__entry mb-3"
           v-for="(meeting, index) in nextThreeMeetings"
           :key="index"
+          class="calendar__entry mb-3"
         >
           <v-col class="calendar__date">
             <span>{{ formatWeekDay(meeting.date.timestamp) }}</span>
@@ -55,18 +55,27 @@
 <script>
 import { mapState } from "pinia";
 import { useSideBarStore } from "@/store/modules/sideBar";
-import { formatDate, formatWeekDay, formatNumberDay } from "@/utils/dateFilters";
+import {
+  formatDate,
+  formatWeekDay,
+  formatNumberDay,
+} from "@/utils/dateFilters";
 
 export default {
   name: "Sidebar",
   computed: {
-    ...mapState(useSideBarStore, ["isLoading", "sideBarPosts", "latestAlarm", "nextThreeMeetings"])
+    ...mapState(useSideBarStore, [
+      "isLoading",
+      "sideBarPosts",
+      "latestAlarm",
+      "nextThreeMeetings",
+    ]),
   },
   methods: {
     formatDate,
     formatWeekDay,
-    formatNumberDay
-  }
+    formatNumberDay,
+  },
 };
 </script>
 

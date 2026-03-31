@@ -17,29 +17,38 @@
         <v-list-item to="/einsatzabteilung" exact>
           <v-list-item-title>Einsatzabteilung</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/einsatzabteilung/dienstplan" prepend-icon="mdi-chevron-right">
+        <v-list-item
+          to="/einsatzabteilung/dienstplan"
+          prepend-icon="mdi-chevron-right"
+        >
           <v-list-item-title>Dienstplan</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/kindergruppen">
           <v-list-item-title>Nachwuchs</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/kindergruppen/wichtelwehr" prepend-icon="mdi-chevron-right">
+        <v-list-item
+          to="/kindergruppen/wichtelwehr"
+          prepend-icon="mdi-chevron-right"
+        >
           <v-list-item-title>Wichtelwehr</v-list-item-title>
         </v-list-item>
         <v-list-item
           to="/kindergruppen/wichtelwehr/uebungsplanwichtel"
-          style="padding-left: 35px;"
+          style="padding-left: 35px"
           prepend-icon="mdi-chevron-right"
         >
           <v-list-item-title>Übungsplan</v-list-item-title>
         </v-list-item>
-        <v-list-item to="/kindergruppen/jugendfeuerwehr" prepend-icon="mdi-chevron-right">
+        <v-list-item
+          to="/kindergruppen/jugendfeuerwehr"
+          prepend-icon="mdi-chevron-right"
+        >
           <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
         </v-list-item>
         <v-list-item
           to="/kindergruppen/jugendfeuerwehr/uebungsplan"
-          style="padding-left: 35px;"
+          style="padding-left: 35px"
           prepend-icon="mdi-chevron-right"
         >
           <v-list-item-title>Übungsplan</v-list-item-title>
@@ -84,7 +93,7 @@
           </v-col>
           <v-col>
             <v-menu location="bottom" open-on-hover>
-              <template v-slot:activator="{ props }">
+              <template #activator="{ props }">
                 <v-btn
                   color="white"
                   v-bind="props"
@@ -118,7 +127,7 @@
           </v-col>
           <v-col>
             <v-menu location="bottom" open-on-hover>
-              <template v-slot:activator="{ props }">
+              <template #activator="{ props }">
                 <v-btn
                   color="white"
                   v-bind="props"
@@ -140,7 +149,7 @@
           </v-col>
           <v-col>
             <v-menu location="bottom" open-on-hover>
-              <template v-slot:activator="{ props }">
+              <template #activator="{ props }">
                 <v-btn
                   color="white"
                   v-bind="props"
@@ -157,7 +166,7 @@
                   <v-list-item-title>Wichtelwehr</v-list-item-title>
                 </v-list-item>
                 <v-list-item to="/kindergruppen/wichtelwehr/uebungsplanwichtel">
-                  <v-list-item-title style="margin-left: 10px;"
+                  <v-list-item-title style="margin-left: 10px"
                     >> Übungsplan</v-list-item-title
                   >
                 </v-list-item>
@@ -165,7 +174,7 @@
                   <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
                 </v-list-item>
                 <v-list-item to="/kindergruppen/jugendfeuerwehr/uebungsplan">
-                  <v-list-item-title style="margin-left: 10px;"
+                  <v-list-item-title style="margin-left: 10px"
                     >> Übungsplan</v-list-item-title
                   >
                 </v-list-item>
@@ -194,8 +203,8 @@
             <v-icon
               size="large"
               color="#fff"
+              style="margin-left: 15px"
               @click="toggleDrawer"
-              style="margin-left: 15px;"
               >mdi-menu</v-icon
             >
           </v-col>
@@ -214,13 +223,13 @@ export default {
     return { breakpointName: name };
   },
   data: () => ({
-    drawer: false
+    drawer: false,
   }),
   methods: {
     toggleDrawer() {
       this.drawer = !this.drawer;
-    }
-  }
+    },
+  },
 };
 </script>
 

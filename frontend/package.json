@@ -7,8 +7,8 @@
     "serve": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.vue src",
-    "lint:fix": "eslint --ext .js,.vue src --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "roster:import": "node scripts/icsToJsonConverter.js"
   },
   "dependencies": {

@@ -11,7 +11,7 @@
       <v-skeleton-loader
         type="paragraph"
         color="transparent"
-      class="report-loader__content-bone"
+        class="report-loader__content-bone"
       ></v-skeleton-loader>
     </div>
   </div>
@@ -37,7 +37,7 @@ export default {};
   width: 0;
   height: 0;
   bottom: -15px;
-  content: '';
+  content: "";
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-top: 16px solid #af4a45;

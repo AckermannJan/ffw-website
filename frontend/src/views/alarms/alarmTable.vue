@@ -3,11 +3,14 @@
     <v-row no-gutters>
       <v-col>
         <Report>
-          <template v-slot:headline>
+          <template #headline>
             Einsätze
             <v-menu location="bottom" open-on-hover>
-              <template v-slot:activator="{ props }">
-                <div v-bind="props" style="display: inline-block; cursor: pointer">
+              <template #activator="{ props }">
+                <div
+                  v-bind="props"
+                  style="display: inline-block; cursor: pointer"
+                >
                   {{ selectedYear
                   }}<v-icon size="large" color="#fff">mdi-chevron-down</v-icon>
                 </div>
@@ -15,15 +18,15 @@
               <v-list>
                 <v-list-item
                   v-for="year in selectableYears"
-                  @click="() => selectYear(year)"
                   :key="year"
+                  @click="() => selectYear(year)"
                 >
                   <v-list-item-title> {{ year }} </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
           </template>
-          <template v-slot:content>
+          <template #content>
             <div v-if="!isLoading">
               <div v-if="alarms.length === 0">
                 <v-row align="center">
@@ -36,35 +39,35 @@
                 </v-row>
               </div>
               <router-link
-                :to="'einsatze/' + alarm.post_name"
                 v-for="(alarm, index) in alarms"
                 :key="index"
+                :to="'einsatze/' + alarm.post_name"
                 class="removeLink"
               >
                 <v-row class="mb-4">
                   <v-col cols="1">
                     <v-icon
+                      v-if="alarm.einsatzicon === '1'"
                       color="#fff"
                       class="circle"
-                      v-if="alarm.einsatzicon === '1'"
                       >mdi-fire</v-icon
                     >
                     <v-icon
+                      v-if="alarm.einsatzicon === '2'"
                       color="#fff"
                       class="circle"
-                      v-if="alarm.einsatzicon === '2'"
                       >mdi-hammer</v-icon
                     >
                     <v-icon
+                      v-if="alarm.einsatzicon === '3'"
                       color="#fff"
                       class="circle"
-                      v-if="alarm.einsatzicon === '3'"
                       >mdi-alarm-bell</v-icon
                     >
                     <v-icon
+                      v-if="alarm.einsatzicon === '4'"
                       color="#fff"
                       class="circle"
-                      v-if="alarm.einsatzicon === '4'"
                       >mdi-binoculars</v-icon
                     >
                   </v-col>
@@ -72,8 +75,8 @@
                     ><b>{{ alarm.post_title }}</b></v-col
                   >
                   <v-col
-                    cols="2"
                     v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
+                    cols="2"
                     ><b>{{
                       formatAlarmDate(alarm.alarmierungszeitpunkt.timestamp)
                     }}</b></v-col
@@ -82,7 +85,7 @@
               </router-link>
             </div>
             <div v-else>
-              <v-row align="center" v-for="index in 10" :key="index">
+              <v-row v-for="index in 10" :key="index" align="center">
                 <v-col>
                   <v-skeleton-loader
                     type="text"
@@ -115,15 +118,21 @@ import { formatAlarmDate } from "@/utils/dateFilters";
 import Report from "../../components/partials/Report/Report.vue";
 
 export default {
-  name: "alarmTable",
+  name: "AlarmTable",
   components: { Report },
   setup() {
     const { name } = useDisplay();
     useHead({
       title: "Feuerwehr Mühltal Traisa | Einsätze",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Einsätze" }]
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Einsätze" }],
     });
     return { breakpointName: name };
+  },
+  data() {
+    return {
+      firstYear: "2013",
+      selectedYear: new Date().getFullYear().toString(),
+    };
   },
   computed: {
     ...mapState(useAlarmsStore, ["alarms", "isLoading"]),
@@ -135,13 +144,7 @@ export default {
         years.push(i.toString());
       }
       return years;
-    }
-  },
-  data() {
-    return {
-      firstYear: "2013",
-      selectedYear: new Date().getFullYear().toString()
-    };
+    },
   },
   mounted() {
     this.getAllAlarmsFromYear(this.selectedYear);
@@ -152,8 +155,8 @@ export default {
     selectYear(year) {
       this.selectedYear = year;
       this.getAllAlarmsFromYear(year);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -166,7 +169,9 @@ export default {
 
 .alarm-skeleton__text .v-skeleton-loader__paragraph {
   background-color: rgba(255, 255, 255, 0) !important;
-  &::after { display: none; }
+  &::after {
+    display: none;
+  }
 }
 </style>
 

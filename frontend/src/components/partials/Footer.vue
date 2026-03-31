@@ -51,9 +51,7 @@
             Kein Gewähr auf Richtigkeit/ Aktualität. Inhalte auf dieser Seite
             gehören Feuerwehr Traisa e.V. (sofern nicht anders angegeben)
           </p>
-          <p>
-            Design und Umsetzung Jan Ackermann
-          </p>
+          <p>Design und Umsetzung Jan Ackermann</p>
         </v-col>
         <v-col>
           <router-link to="/archiv">
@@ -66,7 +64,8 @@
   </v-row>
 </template>
 
-<style type="scss" scoped>
+<script></script>
+<style scoped>
 .footerWrapper {
   background-color: #333333;
   width: 100%;
@@ -96,4 +95,3 @@ p {
   text-decoration: none;
 }
 </style>
-<script></script>

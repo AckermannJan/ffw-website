@@ -9,5 +9,5 @@ export default {
   CUSTOM_API_BASE_PATH:
     "https://wordpress.feuerwehr-traisa.de/wp-json/types/v1/",
   ROSTER_API_URL:
-    "https://wordpress.feuerwehr-traisa.de/wp-json/types/v1/getRoster/"
+    "https://wordpress.feuerwehr-traisa.de/wp-json/types/v1/getRoster/",
 };

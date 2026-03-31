@@ -6,12 +6,12 @@ export default {
     axios
       .get(
         SETTINGS.API_BASE_PATH +
-          "categories?sort=name&hide_empty=true&per_page=50"
+          "categories?sort=name&hide_empty=true&per_page=50",
       )
-      .then(response => {
-        cb(response.data.filter(c => c.name !== "Uncategorized"));
+      .then((response) => {
+        cb(response.data.filter((c) => c.name !== "Uncategorized"));
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -19,10 +19,10 @@ export default {
   getPages(cb) {
     axios
       .get(SETTINGS.API_BASE_PATH + "pages?per_page=10")
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -30,10 +30,10 @@ export default {
   getArchive(cb) {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getArchive")
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -42,13 +42,13 @@ export default {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getPage/", {
         params: {
-          slug: id
-        }
+          slug: id,
+        },
       })
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -56,10 +56,10 @@ export default {
   getPosts(limit = 5, cb) {
     axios
       .get(SETTINGS.API_BASE_PATH + "posts?per_page=" + limit)
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -67,10 +67,10 @@ export default {
   getPost(id, cb) {
     axios
       .get(SETTINGS.API_BASE_PATH + "posts/" + id)
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -79,13 +79,13 @@ export default {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getAlarmPost/", {
         params: {
-          slug
-        }
+          slug,
+        },
       })
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -93,10 +93,10 @@ export default {
   getIndexInfo(cb) {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getIndexInfo/")
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -104,10 +104,10 @@ export default {
   getSidebarInfo(cb) {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getSidebarInfo/")
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -116,13 +116,13 @@ export default {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getAllAlarmsFromYear/", {
         params: {
-          year
-        }
+          year,
+        },
       })
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
   },
@@ -130,11 +130,11 @@ export default {
   getAllMeetings(cb) {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getAllMeetings/")
-      .then(response => {
+      .then((response) => {
         cb(response.data);
       })
-      .catch(e => {
+      .catch((e) => {
         cb(e);
       });
-  }
+  },
 };

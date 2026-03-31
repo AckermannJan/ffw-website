@@ -2,13 +2,13 @@
   <div>
     <v-row
       v-for="(page, index) in archiveData"
-      no-gutters
       :key="index"
+      no-gutters
       class="page mb-10"
     >
       <v-col
-        class="page__img"
         v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
+        class="page__img"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -38,19 +38,19 @@ export default {
     const { name } = useDisplay();
     useHead({
       title: "Feuerwehr Mühltal Traisa | Archiv",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Archiv" }]
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Archiv" }],
     });
     return { breakpointName: name };
   },
   computed: {
-    ...mapState(useArchiveStore, ["isLoading", "archiveData"])
+    ...mapState(useArchiveStore, ["isLoading", "archiveData"]),
   },
   mounted() {
     this.loadArchive();
   },
   methods: {
-    ...mapActions(useArchiveStore, ["loadArchive"])
-  }
+    ...mapActions(useArchiveStore, ["loadArchive"]),
+  },
 };
 </script>
 

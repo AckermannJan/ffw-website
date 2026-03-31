@@ -4,19 +4,19 @@ import api from "../../api";
 export const useTermineStore = defineStore("termine", {
   state: () => ({
     isLoading: false,
-    data: []
+    data: [],
   }),
   getters: {
-    getIsLoading: state => state.isLoading,
-    termine: state => state.data
+    getIsLoading: (state) => state.isLoading,
+    termine: (state) => state.data,
   },
   actions: {
     getAllMeetings() {
       this.isLoading = true;
-      api.getAllMeetings(info => {
+      api.getAllMeetings((info) => {
         this.data = info;
         this.isLoading = false;
       });
-    }
-  }
+    },
+  },
 });

@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-row
-      class="calendar__entry mb-3"
       v-for="(meeting, index) in termine"
       :key="index"
+      class="calendar__entry mb-3"
     >
       <v-col class="calendar__date">
         <span>{{ formatWeekDay(meeting.zeitpunkt.timestamp) }}</span>
@@ -23,18 +23,22 @@
 import { mapState, mapActions } from "pinia";
 import { useTermineStore } from "@/store/modules/termine";
 import { useHead } from "@unhead/vue";
-import { formatDate, formatWeekDay, formatNumberDay } from "@/utils/dateFilters";
+import {
+  formatDate,
+  formatWeekDay,
+  formatNumberDay,
+} from "@/utils/dateFilters";
 
 export default {
   name: "Termine",
   setup() {
     useHead({
       title: "Feuerwehr Mühltal Traisa | Termine",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Termine" }]
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Termine" }],
     });
   },
   computed: {
-    ...mapState(useTermineStore, ["isLoading", "termine"])
+    ...mapState(useTermineStore, ["isLoading", "termine"]),
   },
   mounted() {
     this.getAllMeetings();
@@ -43,15 +47,15 @@ export default {
     ...mapActions(useTermineStore, ["getAllMeetings"]),
     formatDate,
     formatWeekDay,
-    formatNumberDay
-  }
+    formatNumberDay,
+  },
 };
 </script>
 
 <style scoped lang="scss">
 .calendar {
   &__entry {
-    margin: 0px;
+    margin: 0;
     border-bottom: dashed 1px #af4a45;
     padding-bottom: 10px;
   }

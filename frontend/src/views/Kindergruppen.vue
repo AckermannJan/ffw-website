@@ -34,9 +34,11 @@ export default {
   setup() {
     useHead({
       title: "Feuerwehr Mühltal Traisa | Kindergruppen",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Kindergruppen" }]
+      meta: [
+        { name: "title", content: "Feuerwehr Mühltal Traisa | Kindergruppen" },
+      ],
     });
-  }
+  },
 };
 </script>
 

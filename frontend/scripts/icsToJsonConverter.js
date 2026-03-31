@@ -3,17 +3,17 @@ const path = require("path");
 
 const ART_MAP = {
   "Unterricht und Praxis": "U/P",
-  "Unterricht": "U",
-  "Praxis": "P",
+  Unterricht: "U",
+  Praxis: "P",
   "Sonstige Veranstaltungen": "S",
-  "Katastrophenschutz": "KatS",
+  Katastrophenschutz: "KatS",
 };
 
 const parseDateTime = (value) => {
   // Strip TZID param: "TZID=Europe/Berlin:20260107T190000" or bare "20260107T190000"
   const raw = value.includes(":") ? value.split(":").pop() : value;
-  const date = raw.slice(0, 8);   // "20260107"
-  const time = raw.slice(9, 15);  // "190000"
+  const date = raw.slice(0, 8); // "20260107"
+  const time = raw.slice(9, 15); // "190000"
   return { date, time };
 };
 
@@ -37,7 +37,8 @@ const formatTimeBis = (icsTime) => {
 
 const calcDauer = (startTime, endTime) => {
   // Both in "HHMMSS" format
-  const toMinutes = (t) => parseInt(t.slice(0, 2)) * 60 + parseInt(t.slice(2, 4));
+  const toMinutes = (t) =>
+    parseInt(t.slice(0, 2)) * 60 + parseInt(t.slice(2, 4));
   const diff = toMinutes(endTime) - toMinutes(startTime);
   if (diff <= 0) return "";
   const h = Math.floor(diff / 60);

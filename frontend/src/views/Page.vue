@@ -2,17 +2,17 @@
   <div>
     <template v-if="!isLoading">
       <Report>
-        <template v-slot:headline>
+        <template #headline>
           {{ pageDetails.post_title }}
         </template>
-        <template v-slot:content>
-          <div v-html="pageDetails.post_content" class="report__content" />
+        <template #content>
+          <div class="report__content" v-html="pageDetails.post_content" />
         </template>
       </Report>
       <v-carousel
         v-if="
           Object.keys(pageDetails.attached_images).length > 0 &&
-            parseInt(pageDetails.any_attached_images) === 1
+          parseInt(pageDetails.any_attached_images) === 1
         "
         show-arrows="hover"
       >
@@ -37,30 +37,34 @@ import { computed } from "vue";
 import Report from "../components/partials/Report/Report.vue";
 
 export default {
-  setup() {
-    const pageStore = usePageStore();
-    useHead({
-      title: computed(() => "Feuerwehr Mühltal Traisa | " + (pageStore.pageDetails.post_title || ""))
-    });
-  },
-  computed: {
-    ...mapState(usePageStore, ["pageDetails", "isLoading"])
+  components: {
+    Report,
+    Loader,
   },
   props: {
     slug: {
-      default: null
-    }
+      default: null,
+    },
+  },
+  setup() {
+    const pageStore = usePageStore();
+    useHead({
+      title: computed(
+        () =>
+          "Feuerwehr Mühltal Traisa | " +
+          (pageStore.pageDetails.post_title || ""),
+      ),
+    });
+  },
+  computed: {
+    ...mapState(usePageStore, ["pageDetails", "isLoading"]),
   },
   mounted() {
     this.getPageById(this.slug || this.$route.params.pageSlug);
   },
   methods: {
-    ...mapActions(usePageStore, ["getPageById"])
+    ...mapActions(usePageStore, ["getPageById"]),
   },
-  components: {
-    Report,
-    Loader
-  }
 };
 </script>
 
@@ -70,6 +74,6 @@ img {
   height: auto;
 }
 .v-image__image--cover {
-  background-size: 100% auto !Important;
+  background-size: 100% auto !important;
 }
 </style>

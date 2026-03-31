@@ -19,8 +19,8 @@ export default {
   computed: {
     yearsInExistence() {
       return momentInstance().diff("1880-01-01", "years", false);
-    }
-  }
+    },
+  },
 };
 </script>
 

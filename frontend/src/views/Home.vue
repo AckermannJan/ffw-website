@@ -3,13 +3,13 @@
     <WelcomeMsg />
     <v-row
       v-for="(page, index) in pages"
-      no-gutters
       :key="index"
+      no-gutters
       class="page mb-10"
     >
       <v-col
-        class="page__img"
         v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
+        class="page__img"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -41,11 +41,8 @@ export default {
     return { breakpointName: name };
   },
   computed: {
-    ...mapState(useIndexStore, [
-
-  "isLoading", "pages"
-    ])
-  }
+    ...mapState(useIndexStore, ["isLoading", "pages"]),
+  },
 };
 </script>
 

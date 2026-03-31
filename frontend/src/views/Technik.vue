@@ -1,7 +1,7 @@
 <template>
   <Report>
-    <template v-slot:headline> Technik </template
-    ><template v-slot:content style="text-overflow: ellipsis;">
+    <template #headline> Technik </template>
+    <template #content>
       <h2>Fahrzeuge</h2>
       <v-row>
         <v-col>
@@ -120,9 +120,9 @@ export default {
   setup() {
     useHead({
       title: "Feuerwehr Mühltal Traisa | Technik",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Technik" }]
+      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Technik" }],
     });
-  }
+  },
 };
 </script>
 

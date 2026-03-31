@@ -1,14 +1,14 @@
 <template>
   <div v-if="rosterData">
     <v-row
-      class="calendar__entry mb-3"
       v-for="(appointment, index) in rosterData"
       :key="index"
+      class="calendar__entry mb-3"
     >
       <v-col
         :class="[
           'calendar__date',
-          { 'calendar__date--active': isActive(appointment) }
+          { 'calendar__date--active': isActive(appointment) },
         ]"
       >
         <span>{{ rosterWeekDay(appointment.Datum) }}</span>
@@ -34,15 +34,24 @@
 <script>
 import { momentInstance } from "@/utils/moment";
 import { useHead } from "@unhead/vue";
-import { rosterWeekDay, rosterNumberDay, rosterNumberMonth } from "@/utils/dateFilters";
+import {
+  rosterWeekDay,
+  rosterNumberDay,
+  rosterNumberMonth,
+} from "@/utils/dateFilters";
 import settings from "@/settings";
 
 export default {
   name: "Termine",
+  props: {
+    roster: null,
+  },
   setup() {
     useHead({
       title: "Feuerwehr Mühltal Traisa | Dienstplan",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Dienstplan" }]
+      meta: [
+        { name: "title", content: "Feuerwehr Mühltal Traisa | Dienstplan" },
+      ],
     });
   },
   data: () => {
@@ -53,12 +62,9 @@ export default {
         "U/P": "Unterrricht/Praxis",
         P: "Praxis",
         S: "Sonstiges",
-        KatS: "Katastrophenschutz"
-      }
+        KatS: "Katastrophenschutz",
+      },
     };
-  },
-  props: {
-    roster: null
   },
   async mounted() {
     try {
@@ -86,8 +92,8 @@ export default {
       const isSameDay = date.isSame(momentInstance(new Date()), "day");
       const isSameMonth = date.isSame(momentInstance(new Date()), "month");
       return isSameDay && isSameMonth;
-    }
-  }
+    },
+  },
 };
 </script>
 

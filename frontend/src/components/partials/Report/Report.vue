@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: "Report"
+  name: "Report",
 };
 </script>
 

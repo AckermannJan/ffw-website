@@ -9,29 +9,29 @@ export const useAlarmsStore = defineStore("alarms", {
     alarm: {
       alarmierungszeitpunkt: {},
       fahrzeuge: [],
-      medienbilder: []
-    }
+      medienbilder: [],
+    },
   }),
   getters: {
-    getIsLoading: state => state.isLoading,
-    getAlarms: state => state.alarms,
-    getIsAlarmLoading: state => state.isAlarmLoading,
-    getAlarmData: state => state.alarm
+    getIsLoading: (state) => state.isLoading,
+    getAlarms: (state) => state.alarms,
+    getIsAlarmLoading: (state) => state.isAlarmLoading,
+    getAlarmData: (state) => state.alarm,
   },
   actions: {
     getAllAlarmsFromYear(year) {
       this.isLoading = true;
-      api.getAllAlarmsFromYear(year, info => {
+      api.getAllAlarmsFromYear(year, (info) => {
         this.alarms = info;
         this.isLoading = false;
       });
     },
     getAlarm(slug) {
       this.isAlarmLoading = true;
-      api.getAlarm(slug, info => {
+      api.getAlarm(slug, (info) => {
         this.alarm = info;
         this.isAlarmLoading = false;
       });
-    }
-  }
+    },
+  },
 });
