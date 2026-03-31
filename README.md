@@ -7,22 +7,24 @@ Website for **Feuerwehr Traisa** (volunteer fire department), built as a headles
 | Part | Technology | Location |
 |------|-----------|----------|
 | Backend / CMS | WordPress (headless) | `wpTheme/` |
-| Frontend | Vue 2 SPA | `frontend/` |
+| WordPress Plugin | ICS uploader | `wpPlugin/` |
+| Frontend | Vue 3 SPA | `frontend/` |
 
 **Backend** (`wpTheme/`) is deployed to `wordpress.feuerwehr-traisa.de`. It exposes the standard WordPress REST API and custom endpoints under `/wp-json/types/v1/`.
 
-**Frontend** (`frontend/`) is a Vue 2 SPA using Vuetify, Vuex, and Vue Router. It fetches all content from the WordPress API.
+**Frontend** (`frontend/`) is a Vue 3 SPA using Vite, Vuetify 3, Pinia, and Vue Router 4. It fetches all content from the WordPress API.
 
 ## Getting Started
 
 All commands run from the `frontend/` directory:
 
 ```bash
-yarn install    # Install dependencies
-yarn serve      # Dev server (https://fft.local:8080)
-yarn build      # Production build
-yarn lint       # Lint
-yarn lint:fix   # Lint and auto-fix
+npm install           # Install dependencies
+npm run dev           # Dev server (https://fft.local:8080)
+npm run build         # Production build
+npm run lint          # Lint
+npm run lint:fix      # Lint and auto-fix
+npm run roster:import # Convert ICS file to roster JSON
 ```
 
 > The dev server requires the local hostname `fft.local` with HTTPS. Add it to `/etc/hosts`:
@@ -36,7 +38,7 @@ yarn lint:fix   # Lint and auto-fix
 frontend/src/
 ├── api/          # Axios HTTP client
 ├── router/       # Vue Router routes
-├── store/        # Vuex modules (index, sideBar, page, termine, alarms, archive)
+├── store/        # Pinia stores (index, sideBar, page, termine, alarms, archive)
 ├── views/        # Page-level components
 ├── components/   # Shared components
 ├── utils/        # Static data (e.g. duty roster JSON)
@@ -60,8 +62,8 @@ Custom endpoints registered in `wpTheme/functions.php`:
 
 ## Roster Data
 
-The duty roster is stored as a static JSON file at `frontend/src/utils/rosters/eAbtRoster.json`. To update it, convert a CSV export:
+The duty roster is stored as a static JSON file at `frontend/src/utils/rosters/eAbtRoster.json`. To update it, convert an ICS export:
 
 ```bash
-node frontend/scripts/csvToJsonConverter.js
+npm run roster:import
 ```
