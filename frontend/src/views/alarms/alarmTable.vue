@@ -73,7 +73,7 @@
                   >
                   <v-col
                     cols="2"
-                    v-if="['lg', 'xl', 'md'].includes(breakpointName)"
+                    v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
                     ><b>{{
                       formatAlarmDate(alarm.alarmierungszeitpunkt.timestamp)
                     }}</b></v-col

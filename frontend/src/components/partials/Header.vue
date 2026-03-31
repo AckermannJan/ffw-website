@@ -70,7 +70,7 @@
         style="background-color: #af4a45"
       >
         <v-row
-          v-if="['md', 'lg', 'xl'].includes(breakpointName)"
+          v-if="['md', 'lg', 'xl', 'xxl'].includes(breakpointName)"
           no-gutters
           align="center"
           style="height: 55px; text-align: center"

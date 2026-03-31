@@ -8,7 +8,7 @@
     >
       <v-col
         class="page__img"
-        v-if="['lg', 'xl', 'md'].includes(breakpointName)"
+        v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
