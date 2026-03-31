@@ -102,7 +102,7 @@ export default {
   &__entry {
     border-bottom: dashed 1px #af4a45;
     padding-bottom: 10px;
-    margin: 0px;
+    margin: 0;
   }
   &__body {
     border-top: solid 2px #af4a45;

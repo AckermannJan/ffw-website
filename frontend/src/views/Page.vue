@@ -68,7 +68,7 @@ export default {
 };
 </script>
 
-<style type="scss">
+<style>
 img {
   max-width: 100%;
   height: auto;
