@@ -9,7 +9,7 @@
     >
       <v-col
         class="page__img"
-        v-if="['lg', 'xl', 'md'].includes(breakpointName)"
+        v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
         align-self="center"
       >
         <img :src="page.startBild" alt="Vorschaubild Seite" />
@@ -29,7 +29,7 @@
 
 <script>
 import { mapState } from "pinia";
-import { useIndexStore } from "@/store/modules/index";
+import { useIndexStore } from "@/store";
 import { useDisplay } from "vuetify";
 import WelcomeMsg from "../components/partials/WelcomeMsg.vue";
 
