@@ -66,6 +66,7 @@
           src="https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2017/07/header.jpg"
           alt="Feuerwehr-Traisa Gerätehaus"
           class="fluidImg"
+          style="transform: scaleY(-1)"
         />
       </v-col>
     </v-row>
