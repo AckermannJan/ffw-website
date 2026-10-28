@@ -26,8 +26,26 @@
   }
 }
 
-.main-content {
-  align-content: flex-start;
+// Sidebar left, content right; on tablets and phones the content comes first.
+.layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  padding-top: 48px;
+  padding-bottom: 72px;
+
+  &__main {
+    min-width: 0;
+  }
+
+  @media (max-width: 960px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    &__side {
+      order: 2;
+    }
+  }
 }
 
 body {

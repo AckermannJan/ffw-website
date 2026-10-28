@@ -11,6 +11,10 @@ export const useSideBarStore = defineStore("sideBar", {
     latestAlarm: (state) => state.data.latestAlarm,
     nextThreeMeetings: (state) => state.data.nextThreeMeetings,
     sideBarPosts: (state) => state.data.sideBarPosts,
+    // Landing page fields from wpTheme (see docs/landing-page-content.md).
+    alarmCountThisYear: (state) => state.data.alarmCountThisYear,
+    hero: (state) => state.data.hero,
+    mitmachen: (state) => state.data.mitmachen,
   },
   actions: {
     getSidebarInfo() {

@@ -1,238 +1,205 @@
 <template>
-  <v-container fluid class="customContainer">
-    <v-navigation-drawer v-model="drawer" absolute temporary>
-      <v-list nav density="compact">
-        <v-list-item to="/">
-          <v-list-item-title>Startseite</v-list-item-title>
-        </v-list-item>
+  <div class="site-header">
+    <div class="utility">
+      <div class="ffw-wrap utility__inner">
+        <span class="utility__claim">
+          Freiwillige Feuerwehr Mühltal · Ortsteil Traisa · seit
+          {{ foundedYear }}
+        </span>
+        <span>
+          Im Notfall immer
+          <a href="tel:112" class="utility__emergency">112</a> wählen
+        </span>
+      </div>
+    </div>
 
-        <v-list-item to="/seite/verein">
-          <v-list-item-title>Verein</v-list-item-title>
-        </v-list-item>
+    <header class="brand">
+      <div class="ffw-wrap brand__grid">
+        <router-link to="/" class="brand__sketch" aria-label="Zur Startseite">
+          <img :src="sketch" alt="" width="720" height="261" />
+        </router-link>
+        <div class="brand__text">
+          <div class="brand__title">Freiwillige Feuerwehr Traisa</div>
+          <div class="brand__claim">
+            Wir sind jederzeit für Sie da – ehrenamtlich!
+          </div>
+        </div>
+        <div class="brand__actions">
+          <a href="tel:112" class="ffw-btn brand__emergency">
+            <v-icon size="20">mdi-phone</v-icon>
+            Notruf 112
+          </a>
+          <button
+            type="button"
+            class="icon-btn"
+            :aria-label="
+              isDark ? 'Helles Design aktivieren' : 'Dunkles Design aktivieren'
+            "
+            @click="toggle"
+          >
+            <v-icon size="22">{{
+              isDark ? "mdi-white-balance-sunny" : "mdi-weather-night"
+            }}</v-icon>
+          </button>
+        </div>
+      </div>
+    </header>
 
-        <v-list-item to="/einsatzabteilung/einsatze">
-          <v-list-item-title>Einsätze</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/einsatzabteilung" exact>
-          <v-list-item-title>Einsatzabteilung</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/einsatzabteilung/dienstplan"
-          prepend-icon="mdi-chevron-right"
-        >
-          <v-list-item-title>Dienstplan</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/kindergruppen">
-          <v-list-item-title>Nachwuchs</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/kindergruppen/wichtelwehr"
-          prepend-icon="mdi-chevron-right"
-        >
-          <v-list-item-title>Wichtelwehr</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/kindergruppen/wichtelwehr/uebungsplanwichtel"
-          style="padding-left: 35px"
-          prepend-icon="mdi-chevron-right"
-        >
-          <v-list-item-title>Übungsplan</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/kindergruppen/jugendfeuerwehr"
-          prepend-icon="mdi-chevron-right"
-        >
-          <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
-        </v-list-item>
-        <v-list-item
-          to="/kindergruppen/jugendfeuerwehr/uebungsplan"
-          style="padding-left: 35px"
-          prepend-icon="mdi-chevron-right"
-        >
-          <v-list-item-title>Übungsplan</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/technik">
-          <v-list-item-title>Technik</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-row justify="center" no-gutters class="mb-8">
-      <v-col xl="7" lg="11" md="12" class="header__img">
-        <img
-          src="https://wordpress.feuerwehr-traisa.de/wp-content/uploads/2017/07/header.jpg"
-          alt="Feuerwehr-Traisa Gerätehaus"
-          class="fluidImg"
-        />
-      </v-col>
-    </v-row>
-
-    <v-row justify="center" no-gutters>
-      <v-col
-        xl="7"
-        lg="11"
-        md="12"
-        class="navigation"
-        style="background-color: #af4a45"
-      >
-        <v-row
-          v-if="['md', 'lg', 'xl', 'xxl'].includes(breakpointName)"
-          no-gutters
-          align="center"
-          style="height: 55px; text-align: center"
-        >
-          <v-col style="max-width: 50px">
-            <router-link to="/" style="text-decoration: none">
-              <v-icon size="large" color="#fff" style="margin-left: 15px"
-                >mdi-home</v-icon
+    <nav class="nav" aria-label="Hauptnavigation">
+      <div class="ffw-wrap">
+        <div class="nav__bar">
+          <ul class="nav__list">
+            <li>
+              <router-link
+                to="/"
+                class="nav__link nav__link--home"
+                :class="{ 'is-active': $route.path === '/' }"
+                aria-label="Startseite"
               >
-            </router-link>
-          </v-col>
-          <v-col>
-            <v-menu location="bottom" open-on-hover>
-              <template #activator="{ props }">
-                <v-btn
-                  color="white"
-                  v-bind="props"
-                  variant="text"
-                  :ripple="false"
-                  size="large"
-                  to="/seite/verein"
-                >
-                  Verein
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item to="/termine">
-                  <v-list-item-title
-                    >Termine und Veranstaltungen</v-list-item-title
+                <v-icon size="22">mdi-home</v-icon>
+              </router-link>
+            </li>
+            <li v-for="item in items" :key="item.to" class="nav__item">
+              <router-link
+                :to="item.to"
+                class="nav__link"
+                :class="{ 'is-active': isActive(item) }"
+              >
+                {{ item.label }}
+                <v-icon v-if="item.children" size="16">mdi-chevron-down</v-icon>
+              </router-link>
+              <ul v-if="item.children" class="nav__sub">
+                <li v-for="child in item.children" :key="child.to">
+                  <router-link
+                    :to="child.to"
+                    :class="['nav__sub-link', { 'is-nested': child.nested }]"
                   >
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-btn
-              color="white"
-              variant="text"
-              :ripple="false"
-              size="large"
-              to="/einsatzabteilung/einsatze"
-            >
-              Einsätze
-            </v-btn>
-          </v-col>
-          <v-col>
-            <v-menu location="bottom" open-on-hover>
-              <template #activator="{ props }">
-                <v-btn
-                  color="white"
-                  v-bind="props"
-                  variant="text"
-                  :ripple="false"
-                  size="large"
-                  to="/einsatzabteilung"
-                  exact
-                >
-                  Einsatzabteilung
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item to="/einsatzabteilung/dienstplan">
-                  <v-list-item-title>Dienstplan</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-menu location="bottom" open-on-hover>
-              <template #activator="{ props }">
-                <v-btn
-                  color="white"
-                  v-bind="props"
-                  variant="text"
-                  :ripple="false"
-                  size="large"
-                  to="/kindergruppen"
-                >
-                  Nachwuchs
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item to="/kindergruppen/wichtelwehr">
-                  <v-list-item-title>Wichtelwehr</v-list-item-title>
-                </v-list-item>
-                <v-list-item to="/kindergruppen/wichtelwehr/uebungsplanwichtel">
-                  <v-list-item-title style="margin-left: 10px"
-                    >> Übungsplan</v-list-item-title
-                  >
-                </v-list-item>
-                <v-list-item to="/kindergruppen/jugendfeuerwehr">
-                  <v-list-item-title>Jugendfeuerwehr</v-list-item-title>
-                </v-list-item>
-                <v-list-item to="/kindergruppen/jugendfeuerwehr/uebungsplan">
-                  <v-list-item-title style="margin-left: 10px"
-                    >> Übungsplan</v-list-item-title
-                  >
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-btn
-              color="white"
-              variant="text"
-              :ripple="false"
-              size="large"
-              to="/technik"
-            >
-              Technik
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row
-          v-if="['xs', 'sm'].includes(breakpointName)"
-          no-gutters
-          align="center"
-          style="height: 55px; text-align: center"
-        >
-          <v-col cols="1">
-            <v-icon
-              size="large"
-              color="#fff"
-              style="margin-left: 15px"
-              @click="toggleDrawer"
-              >mdi-menu</v-icon
-            >
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+                    {{ child.label }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+          <router-link to="/" class="nav__link nav__mobile-home" aria-label="Startseite">
+            <v-icon size="24">mdi-home</v-icon>
+          </router-link>
+          <button
+            type="button"
+            class="nav__toggle"
+            :aria-expanded="menuOpen ? 'true' : 'false'"
+            aria-controls="mobile-menu"
+            @click="menuOpen = !menuOpen"
+          >
+            Menü
+            <v-icon size="24">{{ menuOpen ? "mdi-close" : "mdi-menu" }}</v-icon>
+          </button>
+        </div>
+
+        <ul v-if="menuOpen" id="mobile-menu" class="nav__mobile">
+          <li>
+            <router-link to="/" class="nav__mobile-link">Startseite</router-link>
+          </li>
+          <template v-for="item in items" :key="item.to">
+            <li>
+              <router-link :to="item.to" class="nav__mobile-link">
+                {{ item.label }}
+              </router-link>
+            </li>
+            <li v-for="child in item.children || []" :key="child.to">
+              <router-link
+                :to="child.to"
+                :class="[
+                  'nav__mobile-link',
+                  'nav__mobile-link--child',
+                  { 'is-nested': child.nested },
+                ]"
+              >
+                {{ child.label }}
+              </router-link>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </nav>
+  </div>
 </template>
 
 <script>
-import { useDisplay } from "vuetify";
+import sketch from "@/assets/img/sketch.png";
+import { useColorScheme } from "@/composables/useColorScheme";
+import { FOUNDED_YEAR } from "@/utils/constants";
+
+const NAV_ITEMS = [
+  {
+    label: "Verein",
+    to: "/seite/verein",
+    match: ["/seite/verein", "/termine"],
+    children: [{ label: "Termine und Veranstaltungen", to: "/termine" }],
+  },
+  {
+    label: "Einsätze",
+    to: "/einsatzabteilung/einsatze",
+    match: ["/einsatzabteilung/einsatze"],
+  },
+  {
+    label: "Einsatzabteilung",
+    to: "/einsatzabteilung",
+    match: ["/einsatzabteilung", "/einsatzabteilung/dienstplan"],
+    exact: true,
+    children: [{ label: "Dienstplan", to: "/einsatzabteilung/dienstplan" }],
+  },
+  {
+    label: "Nachwuchs",
+    to: "/kindergruppen",
+    match: ["/kindergruppen"],
+    children: [
+      { label: "Wichtelwehr", to: "/kindergruppen/wichtelwehr" },
+      {
+        label: "Übungsplan Wichtelwehr",
+        to: "/kindergruppen/wichtelwehr/uebungsplanwichtel",
+        nested: true,
+      },
+      { label: "Jugendfeuerwehr", to: "/kindergruppen/jugendfeuerwehr" },
+      {
+        label: "Übungsplan Jugendfeuerwehr",
+        to: "/kindergruppen/jugendfeuerwehr/uebungsplan",
+        nested: true,
+      },
+    ],
+  },
+  { label: "Technik", to: "/technik", match: ["/technik"] },
+];
 
 export default {
+  name: "AppHeader",
   setup() {
-    const { name } = useDisplay();
-    return { breakpointName: name };
+    const { isDark, toggle } = useColorScheme();
+    return { isDark, toggle };
   },
   data: () => ({
-    drawer: false,
+    menuOpen: false,
+    items: NAV_ITEMS,
+    sketch,
+    foundedYear: FOUNDED_YEAR,
   }),
+  watch: {
+    "$route.path"() {
+      this.menuOpen = false;
+    },
+  },
   methods: {
-    toggleDrawer() {
-      this.drawer = !this.drawer;
+    isActive(item) {
+      const path = this.$route.path;
+      if (item.exact) return item.match.includes(path);
+      // "Einsätze" lives under /einsatzabteilung, so prefix matching must not
+      // light up "Einsatzabteilung" for alarm pages.
+      return item.match.some((m) => path === m || path.startsWith(m + "/"));
     },
   },
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "Header";
 </style>

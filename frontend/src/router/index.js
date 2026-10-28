@@ -4,7 +4,11 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/Home.vue"),
+    // "hero" renders full width above the sidebar layout (see App.vue).
+    components: {
+      default: () => import("../views/Home.vue"),
+      hero: () => import("../components/home/HomeHero.vue"),
+    },
   },
   {
     path: "/seite/:pageSlug",
