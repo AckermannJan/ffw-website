@@ -8,6 +8,67 @@ function remove_redirects() {
 }
 add_action( 'init', 'remove_redirects' );
 
+// Pages get the standard excerpt box (used for news teasers and "Mitmachen")
+// and a featured image (fallback for the start page hero).
+function ffw_enable_page_features() {
+    add_post_type_support( 'page', 'excerpt' );
+    add_theme_support( 'post-thumbnails' );
+}
+add_action( 'init', 'ffw_enable_page_features' );
+
+/*
+ * Helpers for the redesign fields.
+ * Types is the free, unmaintained version: every lookup is guarded so a
+ * missing plugin or a field that is not configured yet returns '' instead
+ * of a fatal error.
+ */
+
+function ffw_field( $slug, $postId ) {
+    if ( ! $postId || ! function_exists( 'types_get_field_meta_value' ) ) {
+        return '';
+    }
+    $value = types_get_field_meta_value( $slug, $postId );
+    return $value ? $value : '';
+}
+
+// Types date fields come back either as an array with 'timestamp' or as the
+// raw timestamp, depending on the field settings.
+function ffw_date_field( $slug, $postId ) {
+    $value = ffw_field( $slug, $postId );
+    $timestamp = is_array( $value ) ? ( isset( $value['timestamp'] ) ? $value['timestamp'] : '' ) : $value;
+    if ( ! $timestamp || ! is_numeric( $timestamp ) ) {
+        return '';
+    }
+    // Types stores local time as a UTC timestamp, same as the frontend reads it.
+    return gmdate( 'Y-m-d H:i:s', (int) $timestamp );
+}
+
+// Alt text from the media library for an uploaded image URL.
+function ffw_image_alt( $url ) {
+    if ( ! $url || ! is_string( $url ) ) {
+        return '';
+    }
+    $attachmentId = attachment_url_to_postid( $url );
+    return $attachmentId ? (string) get_post_meta( $attachmentId, '_wp_attachment_image_alt', true ) : '';
+}
+
+function ffw_excerpt( $post, $words = 40 ) {
+    if ( $post->post_excerpt ) {
+        return wp_strip_all_tags( $post->post_excerpt );
+    }
+    return wp_trim_words( wp_strip_all_tags( $post->post_content ), $words, ' …' );
+}
+
+// Category label for news: a Types field "kategorie" if set, otherwise the
+// title of the parent page (e.g. "Verein", "Einsatzabteilung").
+function ffw_category( $post ) {
+    $category = ffw_field( 'kategorie', $post->ID );
+    if ( $category ) {
+        return $category;
+    }
+    return $post->post_parent ? get_the_title( $post->post_parent ) : '';
+}
+
 /*
  * Custom API DOC
  * - getAlarmPost
@@ -19,7 +80,8 @@ add_action( 'init', 'remove_redirects' );
  *   @params -> type
  *
  * - getSidebarInfo
- *   @info   -> Returns all all information needed for the sidebar
+ *   @info   -> Returns all all information needed for the sidebar, plus
+ *              alarmCountThisYear, hero (start page image) and mitmachen
  *
  * - getAllAlarmsFromYear
  *   @info   -> Returns all alarms for selected year
@@ -29,7 +91,8 @@ add_action( 'init', 'remove_redirects' );
  *   @info   -> Returns all meetings
  *
  * - getIndexInfo
- *   @info   -> Returns index info
+ *   @info   -> Returns index info (incl. startBildAlt, excerpt, kategorie,
+ *              veranstaltungsdatum)
 */
 
 /*
@@ -180,7 +243,10 @@ function getSidebarInfo() {
     );
 
     $latestAlarm = get_posts( $latestAlarmArgs );
-    $alarmierungszeitpunkt = (object) array('alarmTime' => types_get_field_meta_value( 'alarmierungszeitpunkt', $latestAlarm[0]->ID ));
+    $alarmierungszeitpunkt = (object) array(
+        'alarmTime' => types_get_field_meta_value( 'alarmierungszeitpunkt', $latestAlarm[0]->ID ),
+        'einsatzart' => ffw_field( 'einsatzart', $latestAlarm[0]->ID ),
+    );
     $latestAlarm =  (object) array('latestAlarm' => array_merge((array) $latestAlarm[0],(array) $alarmierungszeitpunkt));
 
     $nextThreeMeetingsArgs = array(
@@ -224,7 +290,90 @@ function getSidebarInfo() {
     $returnData = (object) array_merge((array) $sideBar, (array) $nextThreeMeetings);
     $returnData = (object) array_merge((array) $returnData, (array) $latestAlarm);
 
+    $returnData->alarmCountThisYear = ffw_alarm_count_this_year();
+    $returnData->hero = ffw_start_hero();
+    $returnData->mitmachen = ffw_mitmachen();
+
     return $returnData;
+}
+
+/*
+ * Number of alarms whose alarm time is in the current year.
+ */
+function ffw_alarm_count_this_year() {
+    $year = (int) date( 'Y' );
+    // Only alarms posted since December of last year can be from this year;
+    // this keeps the lookup small instead of reading every alarm ever.
+    $alarmIds = get_posts( array(
+        'post_type' => 'einsatz',
+        'numberposts' => -1,
+        'fields' => 'ids',
+        'date_query' => array( array( 'after' => ( $year - 1 ) . '-12-01' ) ),
+    ) );
+    $count = 0;
+    foreach ( $alarmIds as $alarmId ) {
+        $time = ffw_field( 'alarmierungszeitpunkt', $alarmId );
+        if ( is_array( $time ) && ! empty( $time['timestamp'] ) && (int) gmdate( 'Y', (int) $time['timestamp'] ) === $year ) {
+            $count++;
+        }
+    }
+    return $count;
+}
+
+/*
+ * Hero image for the start page, maintained on the (private) page with the
+ * slug "startseite": its "Start-Bild" Types field, or else its featured image.
+ * Returns null when that page does not exist; the frontend then uses its
+ * placeholder.
+ */
+function ffw_start_hero() {
+    $pages = get_posts( array(
+        'post_type' => 'page',
+        'name' => 'startseite',
+        'post_status' => array( 'publish', 'private' ),
+        'numberposts' => 1,
+    ) );
+    if ( empty( $pages ) ) {
+        return null;
+    }
+    $page = $pages[0];
+    $image = ffw_field( 'start-bild', $page->ID );
+    if ( ! $image ) {
+        $image = get_the_post_thumbnail_url( $page->ID, 'large' );
+    }
+    if ( ! $image ) {
+        return null;
+    }
+    return array(
+        'image' => $image,
+        'imageAlt' => ffw_image_alt( $image ),
+    );
+}
+
+/*
+ * "Mitmachen" teasers in the sidebar: the excerpt of each group's page.
+ * 'to' is the frontend route; 'text' is '' until the page has an excerpt.
+ */
+function ffw_mitmachen() {
+    $groups = array(
+        array( 'slug' => 'info', 'title' => 'Wichtelwehr', 'to' => '/kindergruppen/wichtelwehr' ),
+        array( 'slug' => 'info-2', 'title' => 'Jugendfeuerwehr', 'to' => '/kindergruppen/jugendfeuerwehr' ),
+        array( 'slug' => 'einsatzabteilung', 'title' => 'Einsatzabteilung', 'to' => '/einsatzabteilung' ),
+    );
+    $entries = array();
+    foreach ( $groups as $group ) {
+        $pages = get_posts( array(
+            'post_type' => 'page',
+            'name' => $group['slug'],
+            'numberposts' => 1,
+        ) );
+        $entries[] = array(
+            'title' => $group['title'],
+            'to' => $group['to'],
+            'text' => ( ! empty( $pages ) && $pages[0]->post_excerpt ) ? wp_strip_all_tags( $pages[0]->post_excerpt ) : '',
+        );
+    }
+    return $entries;
 }
 
 
@@ -312,16 +461,20 @@ function getIndexInfo() {
     $posts = array();
     foreach ($indexPosts as $post) {
         $visibleonstart = types_get_field_meta_value( 'visibleonstart', $post->ID );
+        if ( ! $visibleonstart ) {
+            continue;
+        }
         $startBild = types_get_field_meta_value( 'start-bild', $post->ID );
         $data = (object) array(
             'visibleonstart' => $visibleonstart,
             'startBild' => $startBild,
+            'startBildAlt' => ffw_image_alt( $startBild ),
+            'excerpt' => ffw_excerpt( $post ),
+            'kategorie' => ffw_category( $post ),
+            'veranstaltungsdatum' => ffw_date_field( 'veranstaltungsdatum', $post->ID ),
         );
         $post->post_content = strip_tags($post->post_content);
-        $data = (object) array_merge((array) ($post), (array) $data);
-        if($visibleonstart){
-            $posts[] = $data;
-        }
+        $posts[] = (object) array_merge((array) ($post), (array) $data);
     }
     return $posts;
 }
