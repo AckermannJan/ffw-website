@@ -16,6 +16,19 @@ function ffw_enable_page_features() {
 }
 add_action( 'init', 'ffw_enable_page_features' );
 
+// Styles the classic editor (TinyMCE) like the content on the Vue site, so
+// pages look in wp-admin roughly like they will on feuerwehr-traisa.de.
+// The file time busts the editor's cache after each deploy.
+function ffw_editor_style() {
+    $file = get_template_directory() . '/editor-style.css';
+    $version = file_exists( $file ) ? filemtime( $file ) : '1';
+    add_editor_style( array(
+        'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap',
+        get_template_directory_uri() . '/editor-style.css?ver=' . $version,
+    ) );
+}
+add_action( 'after_setup_theme', 'ffw_editor_style' );
+
 /*
  * Helpers for the redesign fields.
  * Types is the free, unmaintained version: every lookup is guarded so a
