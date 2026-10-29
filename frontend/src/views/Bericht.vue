@@ -37,7 +37,7 @@
           type="button"
           class="bericht__hero"
           :aria-label="`${hero.alt || 'Titelbild'} vergrößern`"
-          @click="photoIndex = 0"
+          @click="$refs.gallery.open(0)"
         >
           <img :src="hero.src" :alt="hero.alt" />
         </button>
@@ -47,24 +47,9 @@
             <CmsContent :html="page.post_content" />
           </div>
 
-          <section v-if="gallery.length" aria-labelledby="bericht-photos">
-            <h2 id="bericht-photos" class="bericht__section">Bilder</h2>
-            <ul class="gallery">
-              <li v-for="photo in gallery" :key="photo.src">
-                <button
-                  type="button"
-                  class="photo"
-                  :aria-label="`${photo.alt} vergrößern`"
-                  @click="photoIndex = photo.index"
-                >
-                  <img :src="photo.src" :alt="photo.alt" loading="lazy" />
-                  <span class="photo__zoom" aria-hidden="true">
-                    <v-icon size="20">mdi-magnify-plus-outline</v-icon>
-                  </span>
-                </button>
-              </li>
-            </ul>
-          </section>
+          <!-- The title image is photo 0: the grid skips it, the viewer
+               includes it. -->
+          <PhotoGallery ref="gallery" :photos="photos" :skip="hero ? 1 : 0" />
 
           <footer class="bericht__foot">
             <router-link to="/" class="ffw-link bericht__back">
@@ -76,8 +61,6 @@
             </router-link>
           </footer>
         </div>
-
-        <PhotoLightbox v-model:index="photoIndex" :photos="photos" />
       </template>
     </article>
 
@@ -117,7 +100,7 @@ import { useHead } from "@unhead/vue";
 import { computed } from "vue";
 import { momentInstance } from "@/utils/moment";
 import CmsContent from "@/components/cms/CmsContent.vue";
-import PhotoLightbox from "@/components/partials/PhotoLightbox.vue";
+import PhotoGallery from "@/components/partials/PhotoGallery.vue";
 import PostMeta from "@/components/home/PostMeta.vue";
 
 // Uploads are stored with http:// URLs; the site runs on https.
@@ -143,7 +126,7 @@ const CTAS = {
 // there (getIndexInfo), older reports show only their publish date.
 export default {
   name: "Bericht",
-  components: { CmsContent, PhotoLightbox, PostMeta },
+  components: { CmsContent, PhotoGallery, PostMeta },
   setup() {
     const pageStore = usePageStore();
     useHead({
@@ -154,9 +137,6 @@ export default {
       ),
     });
   },
-  data: () => ({
-    photoIndex: null,
-  }),
   computed: {
     ...mapState(usePageStore, { page: "pageDetails", isLoading: "isLoading" }),
     ...mapState(useIndexStore, { indexPages: "pages" }),
@@ -196,7 +176,7 @@ export default {
         .filter(Boolean)
         .map(https);
     },
-    // Lightbox: title image first, then the gallery without duplicates.
+    // Viewer: title image first, then the gallery without duplicates.
     photos() {
       const list = [];
       if (this.hero) {
@@ -207,12 +187,6 @@ export default {
         list.push({ src, alt: `Bild ${i + 1} von ${rest.length}` }),
       );
       return list;
-    },
-    gallery() {
-      const offset = this.hero ? 1 : 0;
-      return this.photos
-        .slice(offset)
-        .map((photo, i) => ({ ...photo, index: i + offset }));
     },
     cta() {
       return CTAS[this.category] || null;
@@ -233,7 +207,6 @@ export default {
     ...mapActions(usePageStore, ["getPageById"]),
     https,
     load() {
-      this.photoIndex = null;
       if (this.slug) this.getPageById(this.slug);
     },
   },
