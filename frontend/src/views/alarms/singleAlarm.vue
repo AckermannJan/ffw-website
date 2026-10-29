@@ -102,7 +102,8 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAlarmsStore } from "@/store/modules/alarms";
-import { useHead } from "@unhead/vue";
+import { useRoute } from "vue-router";
+import { usePageSeo } from "@/utils/seo";
 import { computed } from "vue";
 import api from "@/api";
 import { momentInstance } from "@/utils/moment";
@@ -122,12 +123,36 @@ export default {
   components: { CmsContent, PhotoGallery },
   setup() {
     const alarmsStore = useAlarmsStore();
-    useHead({
-      title: computed(
-        () =>
-          "Feuerwehr Mühltal Traisa | " + (alarmsStore.alarm.post_title || ""),
-      ),
-      meta: [{ name: "robots", content: "nofollow" }],
+    const route = useRoute();
+    // The store still holds the previous alarm while the next one loads.
+    const alarm = computed(() =>
+      alarmsStore.alarm.post_name === route.params.pageSlug
+        ? alarmsStore.alarm
+        : {},
+    );
+    usePageSeo({
+      title: () => alarm.value.post_title,
+      // "Technische Hilfeleistung (H 1) in Traisa - Ortsgebiet am 06.10.2026. …"
+      description: () => {
+        const a = alarm.value;
+        if (!a.post_title) return "";
+        const ts = a.alarmierungszeitpunkt?.timestamp;
+        const date = ts
+          ? momentInstance(parseInt(ts) * 1000)
+              .utc()
+              .format("DD.MM.YYYY")
+          : "";
+        const facts = [
+          a.einsatzart,
+          a.einsatzort && `in ${a.einsatzort}`,
+          date && `am ${date}`,
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return `${facts}. ${a.post_content_html || ""}`;
+      },
+      image: () => Object.values(alarm.value.medienbilder || {}).find(Boolean),
+      type: "article",
     });
   },
   data: () => ({

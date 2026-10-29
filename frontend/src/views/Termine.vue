@@ -90,7 +90,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useTermineStore } from "@/store/modules/termine";
-import { useHead } from "@unhead/vue";
+import { ORGANIZATION_LD, toDescription, usePageSeo } from "@/utils/seo";
 import { momentInstance } from "@/utils/moment";
 import { buildIcsEvent, downloadIcs } from "@/utils/ics";
 
@@ -107,9 +107,37 @@ const cleanHtml = (html = "") =>
 export default {
   name: "Termine",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Termine",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Termine" }],
+    const store = useTermineStore();
+    usePageSeo({
+      title: "Termine",
+      description:
+        "Veranstaltungen der Feuerwehr Traisa wie Preisskat, Gerätehausfest und Weihnachtsfeier – mit Datum, Uhrzeit und Kalender-Export.",
+      // Upcoming events as schema.org Events (can show up in search).
+      jsonLd: () => {
+        const today = momentInstance().format("YYYY-MM-DD");
+        const events = (store.termine || [])
+          .filter((t) => t.zeitpunkt && t.zeitpunkt.timestamp)
+          .map((t) => ({ t, date: readDate(t.zeitpunkt) }))
+          .filter(({ date }) => date.format("YYYY-MM-DD") >= today)
+          .map(({ t, date }) => ({
+            "@type": "Event",
+            name: t.post_title,
+            startDate: date.format("YYYY-MM-DDTHH:mm"),
+            description: toDescription(t.post_content, 300),
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode:
+              "https://schema.org/OfflineEventAttendanceMode",
+            location: {
+              "@type": "Place",
+              name: "Feuerwehrhaus Traisa",
+              address: ORGANIZATION_LD.address,
+            },
+            organizer: { "@id": ORGANIZATION_LD["@id"] },
+          }));
+        return events.length
+          ? { "@context": "https://schema.org", "@graph": events }
+          : null;
+      },
     });
   },
   data: () => ({

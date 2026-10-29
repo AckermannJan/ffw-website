@@ -88,7 +88,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAlarmsStore } from "@/store/modules/alarms";
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 import { momentInstance } from "@/utils/moment";
 import { ALARM_CATEGORIES, parseAlarmTitle } from "@/utils/alarms";
 
@@ -103,9 +103,10 @@ const yearFromQuery = (value) => {
 export default {
   name: "AlarmTable",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Einsätze",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Einsätze" }],
+    usePageSeo({
+      title: "Einsätze",
+      description:
+        "Alle Einsätze der Feuerwehr Traisa nach Jahr: Brände, technische Hilfeleistungen und Brandmeldealarme – mit Datum, Einsatzart und Einsatzbericht.",
     });
   },
   data() {

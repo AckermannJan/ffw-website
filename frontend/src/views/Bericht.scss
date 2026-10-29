@@ -145,11 +145,17 @@ $bp-phone: 640px;
     }
   }
 
+  // Arrow links have no underline, like "Mehr lesen" on the start page.
   &__back {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

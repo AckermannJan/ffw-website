@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 import api from "@/api";
 
 const WP = "https://wordpress.feuerwehr-traisa.de/wp-content/uploads";
@@ -134,14 +134,10 @@ const pick = (value, fallback) =>
 export default {
   name: "Einsatzabteilung",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Einsatzabteilung",
-      meta: [
-        {
-          name: "title",
-          content: "Feuerwehr Mühltal Traisa | Einsatzabteilung",
-        },
-      ],
+    usePageSeo({
+      title: "Einsatzabteilung",
+      description:
+        "Die Einsatzabteilung der Feuerwehr Traisa: Ehrenamtliche für Brandbekämpfung, technische Hilfeleistung und Brandschutz in Mühltal. Mitmachen ab 17 Jahren.",
     });
   },
   data: () => ({
@@ -189,8 +185,6 @@ export default {
           value: pick(cms.einsaetzeProJahr, DEFAULTS.einsaetzeProJahr),
           label: "Einsätze pro Jahr",
         },
-        // Age range of the active service is set by law, not by the CMS.
-        { value: "17–60", label: "Jahre aktiver Dienst" },
       ];
     },
     lead() {

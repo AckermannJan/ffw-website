@@ -101,7 +101,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useArchiveStore } from "@/store/modules/archive";
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 import { momentInstance } from "@/utils/moment";
 
 const PAGE_SIZE = 20;
@@ -122,9 +122,10 @@ const shorten = (text = "", max = 180) => {
 export default {
   name: "Archive",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Archiv",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Archiv" }],
+    usePageSeo({
+      title: "Archiv",
+      description:
+        "Ältere Berichte der Freiwilligen Feuerwehr Traisa: Feste, Übungen, Ausbildung, Jugendfeuerwehr und Vereinsleben seit 2014 – durchsuchbar nach Jahr und Bereich.",
     });
   },
   data: () => ({

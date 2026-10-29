@@ -51,12 +51,21 @@
         </div>
 
         <div :key="active.id" class="group">
-          <div class="ffw-img group__img">
-            <img
-              :src="active.image"
-              :alt="active.imageAlt"
-              :style="{ objectPosition: active.imagePosition }"
-            />
+          <div class="group__media">
+            <div class="ffw-img group__img">
+              <img
+                :src="active.image"
+                :alt="active.imageAlt"
+                :style="{ objectPosition: active.imagePosition }"
+              />
+            </div>
+            <router-link
+              :to="active.moreLink"
+              class="ffw-btn ffw-btn--outline group__more"
+            >
+              Mehr über die {{ active.name }}
+              <v-icon size="18">mdi-arrow-right</v-icon>
+            </router-link>
           </div>
           <div class="group__text">
             <div>
@@ -95,9 +104,6 @@
                 {{ active.email }}
               </a>
             </div>
-            <router-link :to="active.moreLink" class="ffw-link group__more">
-              Mehr über die {{ active.name }}
-            </router-link>
           </div>
         </div>
       </section>
@@ -106,7 +112,7 @@
 </template>
 
 <script>
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 
 const WP = "https://wordpress.feuerwehr-traisa.de/wp-content/uploads";
 
@@ -170,11 +176,10 @@ const GROUPS = [
 export default {
   name: "Kindergruppen",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Kindergruppen",
-      meta: [
-        { name: "title", content: "Feuerwehr Mühltal Traisa | Kindergruppen" },
-      ],
+    usePageSeo({
+      title: "Nachwuchs: Wichtelwehr & Jugendfeuerwehr",
+      description:
+        "Wichtelwehr (6–10 Jahre, erste Kinderfeuerwehr Deutschlands seit 1987) und Jugendfeuerwehr (bis 17 Jahre) der Feuerwehr Traisa: Gruppenzeiten, Leitung und Kontakt.",
     });
   },
   data: () => ({

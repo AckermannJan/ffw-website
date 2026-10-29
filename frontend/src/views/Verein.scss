@@ -218,6 +218,9 @@ $bp-phone: 640px;
     counter-increment: step;
     min-height: 32px;
     padding: 3px 0 0 46px;
+    // "SEPA-Einzugsermächtigung" is wider than the column at some widths.
+    overflow-wrap: break-word;
+    hyphens: auto;
 
     &::before {
       content: counter(step);

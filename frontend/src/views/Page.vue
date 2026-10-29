@@ -23,8 +23,7 @@
 import Loader from "../components/partials/Loader.vue";
 import { mapState, mapActions } from "pinia";
 import { usePageStore } from "@/store/modules/page";
-import { useHead } from "@unhead/vue";
-import { computed } from "vue";
+import { usePageSeo } from "@/utils/seo";
 import Report from "../components/partials/Report/Report.vue";
 import CmsContent from "../components/cms/CmsContent.vue";
 import PhotoGallery from "../components/partials/PhotoGallery.vue";
@@ -43,12 +42,12 @@ export default {
   },
   setup() {
     const pageStore = usePageStore();
-    useHead({
-      title: computed(
-        () =>
-          "Feuerwehr Mühltal Traisa | " +
-          (pageStore.pageDetails.post_title || ""),
-      ),
+    usePageSeo({
+      title: () => pageStore.pageDetails.post_title,
+      description: () =>
+        pageStore.pageDetails.post_excerpt ||
+        pageStore.pageDetails.post_content,
+      image: () => pageStore.pageDetails.startBild,
     });
   },
   computed: {
