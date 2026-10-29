@@ -96,6 +96,10 @@ function ffw_category( $post ) {
  *   @info   -> Returns all all information needed for the sidebar, plus
  *              alarmCountThisYear, hero (start page image) and mitmachen
  *
+ * - getEinsatzabteilung
+ *   @info   -> Returns the figures and Wehrführung contact for the
+ *              Einsatzabteilung page (Types fields on that page)
+ *
  * - getAllAlarmsFromYear
  *   @info   -> Returns all alarms for selected year
  *   @params -> year
@@ -392,6 +396,102 @@ function ffw_mitmachen() {
 
 
 /*
+ * Alarms per year, read from the alarm titles ("Einsatz 27 (2026) …"): the
+ * highest number per year is the year's alarm count, also when one post
+ * covers several alarms ("Einsatz 21-22"). Cached for 12 hours.
+ */
+function ffw_alarms_per_year() {
+    $cached = get_transient( 'ffw_alarms_per_year' );
+    if ( is_array( $cached ) ) {
+        return $cached;
+    }
+    $titles = get_posts( array(
+        'post_type' => 'einsatz',
+        'numberposts' => -1,
+        'fields' => 'ids',
+    ) );
+    $counts = array();
+    foreach ( $titles as $alarmId ) {
+        if ( preg_match( '/^Einsatz\s+(\d+)(?:\s*[-–]\s*(\d+))?\s*\((\d{4})\)/u', get_the_title( $alarmId ), $match ) ) {
+            $number = ! empty( $match[2] ) ? (int) $match[2] : (int) $match[1];
+            $year = (int) $match[3];
+            $counts[ $year ] = max( isset( $counts[ $year ] ) ? $counts[ $year ] : 0, $number );
+        }
+    }
+    ksort( $counts );
+    set_transient( 'ffw_alarms_per_year', $counts, 12 * HOUR_IN_SECONDS );
+    return $counts;
+}
+
+// New or edited alarms change the yearly counts.
+function ffw_flush_alarm_counts( $postId ) {
+    if ( get_post_type( $postId ) === 'einsatz' ) {
+        delete_transient( 'ffw_alarms_per_year' );
+    }
+}
+add_action( 'save_post', 'ffw_flush_alarm_counts' );
+
+/*
+ * Figures and contact for the Einsatzabteilung page, maintained as Types
+ * fields on the page with the slug "einsatzabteilung" (group
+ * "Einsatzabteilung"). Empty fields come back as null; the frontend then
+ * keeps its built-in values.
+ * "einsaetzeProJahr": the field "abt-einsaetze-pro-jahr" if filled in,
+ * otherwise the range of the last three complete years ("38–52").
+ */
+function getEinsatzabteilung() {
+    $pages = get_posts( array(
+        'post_type' => 'page',
+        'name' => 'einsatzabteilung',
+        'numberposts' => 1,
+    ) );
+    $pageId = empty( $pages ) ? 0 : $pages[0]->ID;
+
+    $number = function ( $slug ) use ( $pageId ) {
+        $value = ffw_field( $slug, $pageId );
+        return is_numeric( $value ) ? (int) $value : null;
+    };
+    $text = function ( $slug ) use ( $pageId ) {
+        $value = ffw_field( $slug, $pageId );
+        return is_string( $value ) && trim( $value ) !== '' ? trim( $value ) : null;
+    };
+
+    $alarms = $text( 'abt-einsaetze-pro-jahr' );
+    $alarmYears = null;
+    if ( ! $alarms ) {
+        $counts = ffw_alarms_per_year();
+        $lastYear = (int) date( 'Y' ) - 1;
+        $recent = array();
+        foreach ( array( $lastYear - 2, $lastYear - 1, $lastYear ) as $year ) {
+            if ( ! empty( $counts[ $year ] ) ) {
+                $recent[ $year ] = $counts[ $year ];
+            }
+        }
+        if ( ! empty( $recent ) ) {
+            $min = min( $recent );
+            $max = max( $recent );
+            $alarms = $min === $max ? (string) $min : $min . '–' . $max;
+            $alarmYears = array_keys( $recent );
+        }
+    }
+
+    $image = $text( 'abt-wehrfuehrung-bild' );
+
+    return array(
+        'aktive' => $number( 'abt-aktive' ),
+        'feuerwehrfrauen' => $number( 'abt-feuerwehrfrauen' ),
+        'einsaetzeProJahr' => $alarms,
+        'einsaetzeJahre' => $alarmYears,
+        'wehrfuehrung' => array(
+            'namen' => $text( 'abt-wehrfuehrung' ),
+            'email' => $text( 'abt-wehrfuehrung-email' ),
+            'bild' => $image,
+            'bildAlt' => $image ? ffw_image_alt( $image ) : null,
+        ),
+    );
+}
+
+/*
  * Returns all alarms from selected year
  */
 
@@ -546,5 +646,9 @@ function register_api_hooks() {
     register_rest_route( 'types/v1', '/getArchive/', array(
         'methods' => 'GET',
         'callback' => 'getArchive'
+    ));
+    register_rest_route( 'types/v1', '/getEinsatzabteilung/', array(
+        'methods' => 'GET',
+        'callback' => 'getEinsatzabteilung'
     ));
 }
