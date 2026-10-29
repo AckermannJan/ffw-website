@@ -1,75 +1,114 @@
-.sideBarEntry {
-  &__body {
-    background-color: rgba(59, 59, 59, 0.34);
-    border-top: solid 2px #af4a45;
-    max-height: 100px;
-    padding: 10px 15px;
-    &--noBg {
-      background-color: transparent;
-    }
-    &--noPadding {
-      padding: 0;
-    }
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.alarm-card {
+  display: block;
+  background: var(--ffw-panel);
+  border-radius: var(--ffw-radius);
+  padding: 16px;
+  color: var(--ffw-ink);
+  text-decoration: none;
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
-  > img {
+  &__title {
+    margin-top: 4px;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &__type {
+    font-size: 0.875rem;
+    color: var(--ffw-muted);
+  }
+
+  &:hover &__title {
+    text-decoration: underline;
+  }
+}
+
+.meetings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.meeting {
+  display: flex;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 2px dotted var(--ffw-red);
+
+  &__text {
+    min-width: 0;
+  }
+
+  &__title {
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &__when {
+    font-size: 0.875rem;
+    color: var(--ffw-muted);
+  }
+}
+
+.sidebar-post {
+  display: block;
+
+  img {
+    display: block;
     max-width: 100%;
     height: auto;
+    border-radius: var(--ffw-radius);
   }
 }
 
-.calendar__detail-date {
-  position: absolute;
-  bottom: 0;
-}
+.join {
+  background: var(--ffw-surface);
+  border: 1px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
 
-.link {
-  color: rgba(0, 0, 0, 0.87);
-  font-size: 16px;
-  font-weight: normal;
-}
+  &__head {
+    padding: 12px 18px;
+    font-size: 1.0625rem;
+    font-weight: 800;
+  }
 
-.calendar {
-  &__headline {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-  &__entry {
-    border-bottom: dashed 1px #af4a45;
-    padding-bottom: 10px;
-  }
-  &__body {
-    border-top: solid 2px #af4a45;
-    padding: 30px 25px;
-  }
-  &__date {
-    margin-right: 15px;
-    height: 90px;
-    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
-    max-width: 70px;
-    border: 5px solid #af4a45;
-    text-align: center;
-    padding-top: 10px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      transparent 50%,
-      #af4a45 50%,
-      #af4a45
-    );
-    span:first-child {
-      margin-top: -7px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: block;
-      color: #af4a45;
+  &__list {
+    margin: 0;
+    padding: 20px 18px 6px;
+    list-style: none;
+
+    li + li {
+      border-top: 2px dotted var(--ffw-red);
+      padding-top: 12px;
     }
-    span:last-child {
-      margin-top: 7px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: block;
+
+    p {
+      margin: 0 0 12px;
+      font-size: 0.875rem;
+      color: var(--ffw-muted);
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+    color: var(--ffw-ink);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }

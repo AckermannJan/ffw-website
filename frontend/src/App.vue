@@ -24,16 +24,17 @@
       <app-header v-if="!isLoading" />
     </transition>
     <transition name="fade">
-      <v-container v-if="!isLoading" fluid class="mb-8 main-content">
-        <v-row justify="center">
-          <v-col xl="2" lg="4" md="4" cols="12" order-md="1" order="2">
+      <div v-if="!isLoading">
+        <router-view name="hero" />
+        <div class="ffw-wrap layout">
+          <aside class="layout__side">
             <Sidebar />
-          </v-col>
-          <v-col xl="5" lg="7" md="8" cols="12" order-md="2" order="1">
+          </aside>
+          <main class="layout__main">
             <router-view :key="$route.path"></router-view>
-          </v-col>
-        </v-row>
-      </v-container>
+          </main>
+        </div>
+      </div>
     </transition>
     <transition name="fade">
       <app-footer v-if="!isLoading" />
