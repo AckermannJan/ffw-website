@@ -94,6 +94,12 @@ import { ALARM_CATEGORIES, parseAlarmTitle } from "@/utils/alarms";
 
 const FIRST_YEAR = 2013;
 
+const yearFromQuery = (value) => {
+  const year = parseInt(value);
+  const now = new Date().getFullYear();
+  return year >= FIRST_YEAR && year <= now ? year : now;
+};
+
 export default {
   name: "AlarmTable",
   setup() {
@@ -104,7 +110,7 @@ export default {
   },
   data() {
     return {
-      selectedYear: new Date().getFullYear(),
+      selectedYear: yearFromQuery(this.$route.query.jahr),
       filter: "all",
     };
   },
@@ -176,6 +182,13 @@ export default {
     ...mapActions(useAlarmsStore, ["getAllAlarmsFromYear"]),
     loadYear() {
       this.filter = "all";
+      // Keep the year in the URL (?jahr=2025) so alarm pages can link back
+      // to the right year; the current year needs no parameter.
+      const query =
+        this.selectedYear === new Date().getFullYear()
+          ? {}
+          : { jahr: String(this.selectedYear) };
+      this.$router.replace({ query });
       this.getAllAlarmsFromYear(String(this.selectedYear));
     },
   },

@@ -19,6 +19,42 @@ export const ALARM_CATEGORIES = {
   },
 };
 
+// Vehicles, keyed by the Types checkbox values of the field "fahrzeuge".
+// The LF 8 was replaced by the MLF and has no Technik page any more.
+const CARS = "https://wordpress.feuerwehr-traisa.de/wp-content";
+export const ALARM_VEHICLES = {
+  1: {
+    name: "MTF",
+    to: "/technik/mtf",
+    image: `${CARS}/uploads/2016/08/Vorsschaukleinnn.png`,
+  },
+  2: {
+    name: "LF 8",
+    to: null,
+    image: `${CARS}/themes/FFW/imgs/cars/lf86.jpg`,
+  },
+  3: {
+    name: "LF 10",
+    to: "/technik/lf-106",
+    image: `${CARS}/themes/FFW/imgs/cars/lf106.jpg`,
+  },
+  4: {
+    name: "Anhänger",
+    to: "/technik/anhaenger",
+    image: `${CARS}/themes/FFW/imgs/cars/anhaenger.jpg`,
+  },
+  5: {
+    name: "KDOW",
+    to: "/technik/kdow",
+    image: `${CARS}/themes/FFW/imgs/cars/kdow.jpg`,
+  },
+  6: {
+    name: "MLF",
+    to: "/technik/mlf",
+    image: `${CARS}/uploads/2025/05/MLF_Icon.png`,
+  },
+};
+
 // Alarm titles follow "Einsatz 27 (2026) Stromausfall". Split them so the
 // redesign can show number, year and label separately.
 // The alarm number has no field of its own in Types, so the title is the
