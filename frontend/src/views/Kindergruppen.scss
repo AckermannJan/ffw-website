@@ -1,0 +1,286 @@
+// Layout follows the Nachwuchs artboard in the design canvas.
+$bp-wide: 1120px;
+$bp-phone: 640px;
+
+.kids {
+  background: var(--ffw-surface);
+  border: 1px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  color: var(--ffw-ink);
+
+  &__head {
+    padding: 18px 24px;
+
+    h1 {
+      margin: 0;
+      font-size: 1.875rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--ffw-on-red);
+
+      @media (max-width: $bp-phone) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  &__sub {
+    font-size: 0.9375rem;
+    opacity: 0.92;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding: 36px 32px 32px;
+
+    @media (max-width: $bp-phone) {
+      gap: 28px;
+      padding: 24px 16px;
+    }
+  }
+
+  &__lead {
+    max-width: 60ch;
+    margin: 0;
+    font-size: 1.3125rem;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.45;
+
+    @media (max-width: $bp-phone) {
+      font-size: 1.125rem;
+    }
+  }
+}
+
+// ─── Path: Wichtelwehr → Jugendfeuerwehr → Einsatzabteilung ──────────────
+
+.path {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) 32px minmax(0, 1fr) 32px
+    minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__arrow {
+    justify-content: center;
+    align-items: center;
+    color: var(--ffw-red-text);
+  }
+
+  @media (max-width: $bp-phone) {
+    grid-template-columns: minmax(0, 1fr);
+
+    &__arrow {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.step {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px 18px;
+  border-radius: var(--ffw-radius);
+  background: var(--ffw-panel);
+  color: var(--ffw-ink);
+  text-align: center;
+  text-decoration: none;
+
+  &__age {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ffw-muted);
+  }
+
+  &__name {
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  &--goal {
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+
+    .step__age {
+      color: var(--ffw-on-red);
+      opacity: 0.92;
+    }
+
+    &:hover .step__name {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ─── Group tabs ──────────────────────────────────────────────────────────
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 2px solid var(--ffw-red);
+
+  @media (max-width: $bp-phone) {
+    flex-wrap: nowrap;
+  }
+}
+
+.tab {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--ffw-radius) var(--ffw-radius) 0 0;
+  background: var(--ffw-panel);
+  color: var(--ffw-ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  &--on {
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+  }
+
+  // Both tabs stay on one line down to 320px.
+  @media (max-width: $bp-phone) {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.875rem;
+  }
+}
+
+// ─── Group ───────────────────────────────────────────────────────────────
+
+.group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 28px;
+  align-items: start;
+  margin-top: 28px;
+
+  @media (max-width: $bp-wide) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &__img {
+    aspect-ratio: 4 / 3;
+    border-bottom: 6px solid var(--ffw-red);
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 1.625rem;
+      font-weight: 800;
+      line-height: 1.2;
+
+      @media (max-width: $bp-phone) {
+        font-size: 1.375rem;
+      }
+    }
+
+    p {
+      margin: 0;
+      color: var(--ffw-muted);
+    }
+  }
+
+  &__tagline {
+    font-weight: 600;
+    color: var(--ffw-red-text);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .ffw-btn {
+      min-height: 48px;
+    }
+  }
+
+  // Long e-mail address: allow it to break on narrow phones.
+  &__mail {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  &__more {
+    align-self: flex-start;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+}
+
+.meet {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: $bp-phone) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &__item {
+    padding: 14px 16px;
+    border-radius: var(--ffw-radius);
+    background: var(--ffw-panel);
+  }
+
+  &__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ffw-muted);
+  }
+
+  &__value {
+    font-weight: 700;
+  }
+}
+
+.lead {
+  padding-top: 14px;
+  border-top: 2px dotted var(--ffw-red);
+
+  &__label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ffw-red-text);
+  }
+
+  &__names {
+    font-size: 1.125rem;
+    font-weight: 800;
+  }
+}
