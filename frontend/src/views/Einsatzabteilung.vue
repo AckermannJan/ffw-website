@@ -88,18 +88,14 @@
         <h2 id="abt-lead" class="abt__title">Wehrführung</h2>
         <div class="board">
           <div class="ffw-img board__img">
-            <img
-              :src="images.lead"
-              alt="Wehrführer Nicolas Richter und Daniel Funk vor einem Löschfahrzeug"
-              loading="lazy"
-            />
+            <img :src="lead.image" :alt="lead.imageAlt" loading="lazy" />
           </div>
           <div>
             <div class="board__label">Wehrführer</div>
-            <div class="board__names">Nicolas Richter &amp; Daniel Funk</div>
-            <a href="mailto:traisa@feuerwehr-muehltal.de" class="ffw-btn">
+            <div class="board__names">{{ lead.names }}</div>
+            <a :href="'mailto:' + lead.email" class="ffw-btn">
               <v-icon size="18">mdi-email-outline</v-icon>
-              traisa@feuerwehr-muehltal.de
+              {{ lead.email }}
             </a>
           </div>
         </div>
@@ -110,11 +106,31 @@
 
 <script>
 import { useHead } from "@unhead/vue";
+import api from "@/api";
 
 const WP = "https://wordpress.feuerwehr-traisa.de/wp-content/uploads";
 
-// Static page per the design; the text comes from the WordPress page
-// "einsatzabteilung" (its excerpt still feeds "Mitmachen" in the sidebar).
+// Shown until the API answers, and for every field left empty in WordPress.
+const DEFAULTS = {
+  aktive: 37,
+  feuerwehrfrauen: 14,
+  einsaetzeProJahr: "40–50",
+  wehrfuehrung: {
+    namen: "Nicolas Richter & Daniel Funk",
+    email: "traisa@feuerwehr-muehltal.de",
+    bild: `${WP}/2025/04/Portrait_Wefu-683x1024.jpg`,
+    bildAlt:
+      "Wehrführer Nicolas Richter und Daniel Funk vor einem Löschfahrzeug",
+  },
+};
+
+const pick = (value, fallback) =>
+  value === null || value === undefined || value === "" ? fallback : value;
+
+// Page layout per the design. Figures and Wehrführung are maintained in
+// WordPress (Types group "Einsatzabteilung" on the page "einsatzabteilung",
+// endpoint getEinsatzabteilung); the rest is static text from that page.
+// The page's excerpt still feeds "Mitmachen" in the sidebar.
 export default {
   name: "Einsatzabteilung",
   setup() {
@@ -129,12 +145,7 @@ export default {
     });
   },
   data: () => ({
-    facts: [
-      { value: "37", label: "ehrenamtliche Aktive" },
-      { value: "14", label: "Feuerwehrfrauen" },
-      { value: "40–50", label: "Einsätze pro Jahr" },
-      { value: "17–60", label: "Jahre aktiver Dienst" },
-    ],
+    cms: null,
     tasks: [
       { icon: "mdi-fire", label: "Brandbekämpfung" },
       { icon: "mdi-wrench", label: "Technische Hilfeleistung" },
@@ -160,9 +171,54 @@ export default {
     ],
     images: {
       area: `${WP}/2026/05/IMG_7064-1024x768.jpeg`,
-      lead: `${WP}/2025/04/Portrait_Wefu-683x1024.jpg`,
     },
   }),
+  computed: {
+    facts() {
+      const cms = this.cms || {};
+      return [
+        {
+          value: String(pick(cms.aktive, DEFAULTS.aktive)),
+          label: "ehrenamtliche Aktive",
+        },
+        {
+          value: String(pick(cms.feuerwehrfrauen, DEFAULTS.feuerwehrfrauen)),
+          label: "Feuerwehrfrauen",
+        },
+        {
+          value: pick(cms.einsaetzeProJahr, DEFAULTS.einsaetzeProJahr),
+          label: "Einsätze pro Jahr",
+        },
+        // Age range of the active service is set by law, not by the CMS.
+        { value: "17–60", label: "Jahre aktiver Dienst" },
+      ];
+    },
+    lead() {
+      const cms = (this.cms && this.cms.wehrfuehrung) || {};
+      const fallback = DEFAULTS.wehrfuehrung;
+      const names = pick(cms.namen, fallback.namen);
+      const image = pick(cms.bild, fallback.bild);
+      let imageAlt = pick(cms.bildAlt, "");
+      if (!imageAlt) {
+        imageAlt =
+          image === fallback.bild ? fallback.bildAlt : `Wehrführung: ${names}`;
+      }
+      return {
+        names,
+        email: pick(cms.email, fallback.email),
+        image: image.replace(/^http:\/\//, "https://"),
+        imageAlt,
+      };
+    },
+  },
+  mounted() {
+    api.getEinsatzabteilung((data) => {
+      // Errors arrive as an Error object; keep the defaults then.
+      if (data && typeof data === "object" && "aktive" in data) {
+        this.cms = data;
+      }
+    });
+  },
 };
 </script>
 
