@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 
 const WP = "https://wordpress.feuerwehr-traisa.de/wp-content";
 
@@ -68,9 +68,10 @@ const compound = (...parts) => parts.join(String.fromCharCode(173));
 export default {
   name: "Technik",
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Technik",
-      meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Technik" }],
+    usePageSeo({
+      title: "Technik",
+      description:
+        "Fahrzeuge und Feuerwehrhaus der Feuerwehr Traisa: Kommandowagen, Mannschaftstransportfahrzeug, LF 10, MLF, Anhänger und Rettungsboot im Überblick.",
     });
   },
   data: () => ({

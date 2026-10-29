@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 import { momentInstance } from "@/utils/moment";
 import { buildIcsEvent, downloadIcs } from "@/utils/ics";
 import settings from "@/settings";
@@ -123,11 +123,10 @@ export default {
     roster: { type: String, default: null },
   },
   setup() {
-    useHead({
-      title: "Feuerwehr Mühltal Traisa | Dienstplan",
-      meta: [
-        { name: "title", content: "Feuerwehr Mühltal Traisa | Dienstplan" },
-      ],
+    usePageSeo({
+      title: "Dienstplan",
+      description:
+        "Dienstplan der Einsatzabteilung Traisa: Übungen, Unterrichte und Termine mit Ort und Uhrzeit – auch zum Eintragen in den eigenen Kalender.",
     });
   },
   data: () => ({

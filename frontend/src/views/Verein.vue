@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { useHead } from "@unhead/vue";
+import { usePageSeo } from "@/utils/seo";
 import { FOUNDED_YEAR, WICHTELWEHR_SINCE } from "@/utils/constants";
 
 const UPLOADS = "https://wordpress.feuerwehr-traisa.de/wp-content/uploads";
@@ -168,7 +168,11 @@ const UPLOADS = "https://wordpress.feuerwehr-traisa.de/wp-content/uploads";
 export default {
   name: "Verein",
   setup() {
-    useHead({ title: "Feuerwehr Mühltal Traisa | Verein" });
+    usePageSeo({
+      title: "Verein",
+      description:
+        "Der Feuerwehrverein Traisa e.V. fördert seit über 145 Jahren den Brandschutz: Ausrüstung, Nachwuchsarbeit und Feste wie Gerätehausfest und Johannisfeuer. Jetzt Mitglied werden.",
+    });
   },
   data: () => ({
     yearsInExistence: new Date().getFullYear() - FOUNDED_YEAR,

@@ -96,7 +96,8 @@
 import { mapState, mapActions } from "pinia";
 import { usePageStore } from "@/store/modules/page";
 import { useIndexStore } from "@/store/modules/index";
-import { useHead } from "@unhead/vue";
+import { useRoute } from "vue-router";
+import { ORGANIZATION_LD, SITE_URL, usePageSeo } from "@/utils/seo";
 import { computed } from "vue";
 import { momentInstance } from "@/utils/moment";
 import CmsContent from "@/components/cms/CmsContent.vue";
@@ -129,12 +130,34 @@ export default {
   components: { CmsContent, PhotoGallery, PostMeta },
   setup() {
     const pageStore = usePageStore();
-    useHead({
-      title: computed(
-        () =>
-          "Feuerwehr Mühltal Traisa | " +
-          (pageStore.pageDetails.post_title || ""),
-      ),
+    const route = useRoute();
+    // The store still holds the previous report while the next one loads.
+    const page = computed(() =>
+      pageStore.pageDetails.post_name === route.params.pageSlug
+        ? pageStore.pageDetails
+        : {},
+    );
+    usePageSeo({
+      title: () => page.value.post_title,
+      description: () => page.value.post_excerpt || page.value.post_content,
+      image: () => page.value.startBild,
+      type: "article",
+      jsonLd: () =>
+        page.value.post_title
+          ? {
+              "@context": "https://schema.org",
+              "@type": "NewsArticle",
+              headline: page.value.post_title,
+              image: page.value.startBild
+                ? [https(page.value.startBild)]
+                : undefined,
+              datePublished: page.value.post_date?.replace(" ", "T"),
+              dateModified: page.value.post_modified?.replace(" ", "T"),
+              author: { "@id": ORGANIZATION_LD["@id"] },
+              publisher: { "@id": ORGANIZATION_LD["@id"] },
+              mainEntityOfPage: `${SITE_URL}/seite/${page.value.post_name}`,
+            }
+          : null,
     });
   },
   computed: {

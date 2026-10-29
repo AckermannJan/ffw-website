@@ -34,6 +34,7 @@ import Header from "./components/partials/Header.vue";
 import Footer from "./components/partials/Footer.vue";
 import Sidebar from "./components/partials/Sidebar.vue";
 import SplashScreen from "./components/partials/SplashScreen.vue";
+import { ORGANIZATION_LD, SITE_NAME } from "@/utils/seo";
 
 export default {
   components: {
@@ -43,28 +44,16 @@ export default {
     appFooter: Footer,
   },
   setup() {
+    // Site-wide head; each page sets its own title, description, canonical
+    // URL and link previews via usePageSeo (utils/seo.js).
     useHead({
-      title: "Feuerwehr Mühltal Traisa",
       htmlAttrs: { lang: "de" },
-      meta: [
-        { charset: "utf-8" },
-        { name: "robots", content: "INDEX, FOLLOW" },
+      meta: [{ name: "author", content: SITE_NAME }],
+      script: [
         {
-          name: "description",
-          content:
-            "Offizielle Homepage der Freiwilligen Feuerwehr Mühltal-Traisa. Auf dieser Seite finden Sie Informationen über die Feuerwehr Traisa.",
-        },
-        {
-          name: "author",
-          content: "Freiwillige Feuerwehr Mühltal Traisa.",
-        },
-        {
-          name: "keywords",
-          content:
-            "feuer,feuerwehr,feuerwache,traisa,mühltal,muehltal,wache,aua,ortsteil,brand,ff," +
-            "fw,ffw,post,bma,ölsput,lf,tlf,hlf,rtw,feuerwehrmann,dienst,freiwillig,freiwillige," +
-            "ehrenamtlich,immer,da,darmstadt,muehltal,gemeinde,mtf,mtw,löschfahrzeug,löschgruppenfahrzeug," +
-            "einsatz,einsätze,fft,ffwt,traase,traisa",
+          key: "organization-ld",
+          type: "application/ld+json",
+          innerHTML: JSON.stringify(ORGANIZATION_LD),
         },
       ],
     });

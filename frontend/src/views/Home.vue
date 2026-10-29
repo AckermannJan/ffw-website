@@ -58,10 +58,15 @@
 import { mapState } from "pinia";
 import { useIndexStore } from "@/store";
 import PostMeta from "@/components/home/PostMeta.vue";
+import { usePageSeo } from "@/utils/seo";
 
 export default {
   name: "Home",
   components: { PostMeta },
+  setup() {
+    // Site name as title, default description and share image.
+    usePageSeo();
+  },
   computed: {
     ...mapState(useIndexStore, ["pages"]),
     featured() {
