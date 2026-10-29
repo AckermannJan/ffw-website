@@ -1,190 +1,187 @@
 <template>
-  <div>
-    <v-row no-gutters>
-      <v-col>
-        <Report>
-          <template #headline>
-            Einsätze
-            <v-menu location="bottom" open-on-hover>
-              <template #activator="{ props }">
-                <div
-                  v-bind="props"
-                  style="display: inline-block; cursor: pointer"
-                >
-                  {{ selectedYear
-                  }}<v-icon size="large" color="#fff">mdi-chevron-down</v-icon>
-                </div>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="year in selectableYears"
-                  :key="year"
-                  @click="() => selectYear(year)"
-                >
-                  <v-list-item-title> {{ year }} </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
-          <template #content>
-            <div v-if="!isLoading">
-              <div v-if="alarms.length === 0">
-                <v-row align="center">
-                  <v-col cols="12" class="text-center">
-                    <v-icon size="100" color="#af4a45">mdi-fire</v-icon>
-                  </v-col>
-                  <v-col cols="12" class="text-center">
-                    <h2>Bisher wurden keine Einsätze gemeldet.</h2>
-                  </v-col>
-                </v-row>
-              </div>
-              <router-link
-                v-for="(alarm, index) in alarms"
-                :key="index"
-                :to="'einsatze/' + alarm.post_name"
-                class="removeLink"
+  <article class="alarms">
+    <header class="ffw-notch alarms__head">
+      <h1>Einsätze {{ selectedYear }}</h1>
+      <label class="year">
+        <span class="ffw-visually-hidden">Jahr wählen</span>
+        <select v-model="selectedYear" class="year__select" @change="loadYear">
+          <option v-for="year in selectableYears" :key="year" :value="year">
+            {{ year }}
+          </option>
+        </select>
+        <v-icon size="20" class="year__icon">mdi-chevron-down</v-icon>
+      </label>
+    </header>
+
+    <div class="alarms__body">
+      <template v-if="isLoading">
+        <div class="stats" aria-hidden="true">
+          <div v-for="n in 4" :key="n" class="stat stat--loading" />
+        </div>
+        <div v-for="n in 6" :key="n" class="row row--loading" />
+      </template>
+
+      <div v-else-if="!alarms.length" class="empty">
+        <v-icon size="64" class="empty__icon">mdi-fire</v-icon>
+        <h2>Bisher wurden keine Einsätze gemeldet.</h2>
+      </div>
+
+      <template v-else>
+        <div class="stats">
+          <div v-for="cat in categoryStats" :key="cat.id" class="stat">
+            <div class="stat__value">{{ cat.count }}</div>
+            <div class="stat__label">{{ cat.plural }}</div>
+          </div>
+        </div>
+
+        <div class="chips" role="group" aria-label="Einsätze filtern">
+          <button
+            v-for="chip in chips"
+            :key="chip.id"
+            type="button"
+            :class="['chip', { 'chip--on': filter === chip.id }]"
+            :aria-pressed="filter === chip.id ? 'true' : 'false'"
+            @click="filter = chip.id"
+          >
+            {{ chip.label }}
+          </button>
+        </div>
+
+        <section v-for="month in months" :key="month.key" class="month">
+          <h2 class="month__title">{{ month.label }}</h2>
+          <router-link
+            v-for="alarm in month.alarms"
+            :key="alarm.ID"
+            :to="'/einsatzabteilung/einsatze/' + alarm.post_name"
+            class="row"
+          >
+            <div class="badge" aria-hidden="true">
+              <div class="badge__top">Nr.</div>
+              <div
+                :class="[
+                  'badge__bottom',
+                  { 'badge__bottom--long': (alarm.number || '').length > 3 },
+                ]"
               >
-                <v-row class="mb-4">
-                  <v-col cols="1">
-                    <v-icon
-                      v-if="alarm.einsatzicon === '1'"
-                      color="#fff"
-                      class="circle"
-                      >mdi-fire</v-icon
-                    >
-                    <v-icon
-                      v-if="alarm.einsatzicon === '2'"
-                      color="#fff"
-                      class="circle"
-                      >mdi-hammer</v-icon
-                    >
-                    <v-icon
-                      v-if="alarm.einsatzicon === '3'"
-                      color="#fff"
-                      class="circle"
-                      >mdi-alarm-bell</v-icon
-                    >
-                    <v-icon
-                      v-if="alarm.einsatzicon === '4'"
-                      color="#fff"
-                      class="circle"
-                      >mdi-binoculars</v-icon
-                    >
-                  </v-col>
-                  <v-col class="ml-3" style="overflow: hidden"
-                    ><b>{{ alarm.post_title }}</b></v-col
-                  >
-                  <v-col
-                    v-if="['lg', 'xl', 'md', 'xxl'].includes(breakpointName)"
-                    cols="2"
-                    ><b>{{
-                      formatAlarmDate(alarm.alarmierungszeitpunkt.timestamp)
-                    }}</b></v-col
-                  >
-                </v-row>
-              </router-link>
+                {{ alarm.number || "–" }}
+              </div>
             </div>
-            <div v-else>
-              <v-row v-for="index in 10" :key="index" align="center">
-                <v-col>
-                  <v-skeleton-loader
-                    type="text"
-                    color="transparent"
-                    class="alarm-skeleton__text"
-                  ></v-skeleton-loader>
-                </v-col>
-                <v-col cols="2">
-                  <v-skeleton-loader
-                    type="text"
-                    color="transparent"
-                    class="alarm-skeleton__text"
-                  ></v-skeleton-loader>
-                </v-col>
-              </v-row>
+            <div class="row__text">
+              <div class="row__title">{{ alarm.label }}</div>
+              <div class="row__date">{{ alarm.date }}</div>
             </div>
-          </template>
-        </Report>
-      </v-col>
-    </v-row>
-  </div>
+            <span v-if="alarm.category" class="tag">
+              <v-icon size="16">{{ alarm.category.icon }}</v-icon>
+              {{ alarm.category.label }}
+            </span>
+          </router-link>
+        </section>
+
+        <p v-if="!months.length" class="empty-filter">
+          Keine Einsätze in dieser Kategorie.
+        </p>
+      </template>
+    </div>
+  </article>
 </template>
 
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAlarmsStore } from "@/store/modules/alarms";
-import { useDisplay } from "vuetify";
 import { useHead } from "@unhead/vue";
-import { formatAlarmDate } from "@/utils/dateFilters";
-import Report from "../../components/partials/Report/Report.vue";
+import { momentInstance } from "@/utils/moment";
+import { ALARM_CATEGORIES, parseAlarmTitle } from "@/utils/alarms";
+
+const FIRST_YEAR = 2013;
 
 export default {
   name: "AlarmTable",
-  components: { Report },
   setup() {
-    const { name } = useDisplay();
     useHead({
       title: "Feuerwehr Mühltal Traisa | Einsätze",
       meta: [{ name: "title", content: "Feuerwehr Mühltal Traisa | Einsätze" }],
     });
-    return { breakpointName: name };
   },
   data() {
     return {
-      firstYear: "2013",
-      selectedYear: new Date().getFullYear().toString(),
+      selectedYear: new Date().getFullYear(),
+      filter: "all",
     };
   },
   computed: {
     ...mapState(useAlarmsStore, ["alarms", "isLoading"]),
     selectableYears() {
-      const currentYear = new Date().getFullYear();
-      const firstYear = parseInt(this.firstYear);
       const years = [];
-      for (let i = firstYear; i <= currentYear; i++) {
-        years.push(i.toString());
+      for (let y = new Date().getFullYear(); y >= FIRST_YEAR; y--) {
+        years.push(y);
       }
       return years;
     },
+    // Alarm times are stored as local time in a UTC timestamp (Types), so
+    // they are formatted in UTC, like everywhere else on the site.
+    entries() {
+      return this.alarms.map((alarm) => {
+        const time = momentInstance(
+          parseInt(alarm.alarmierungszeitpunkt.timestamp) * 1000,
+        ).utc();
+        const { number, label } = parseAlarmTitle(alarm.post_title);
+        return {
+          ...alarm,
+          number,
+          label,
+          time,
+          date: time.format("dd, DD.MM.YYYY · HH:mm") + " Uhr",
+          category: ALARM_CATEGORIES[alarm.einsatzicon] || null,
+        };
+      });
+    },
+    categoryStats() {
+      return Object.entries(ALARM_CATEGORIES).map(([id, cat]) => ({
+        id,
+        plural: cat.plural,
+        count: this.entries.filter((e) => e.einsatzicon === id).length,
+      }));
+    },
+    chips() {
+      return [
+        { id: "all", label: `Alle (${this.entries.length})` },
+        ...Object.entries(ALARM_CATEGORIES).map(([id, cat]) => ({
+          id,
+          label: cat.label,
+        })),
+      ];
+    },
+    months() {
+      const shown =
+        this.filter === "all"
+          ? this.entries
+          : this.entries.filter((e) => e.einsatzicon === this.filter);
+      const groups = [];
+      for (const alarm of shown) {
+        const key = alarm.time.format("YYYY-MM");
+        let group = groups.find((g) => g.key === key);
+        if (!group) {
+          group = { key, label: alarm.time.format("MMMM YYYY"), alarms: [] };
+          groups.push(group);
+        }
+        group.alarms.push(alarm);
+      }
+      return groups;
+    },
   },
   mounted() {
-    this.getAllAlarmsFromYear(this.selectedYear);
+    this.loadYear();
   },
   methods: {
     ...mapActions(useAlarmsStore, ["getAllAlarmsFromYear"]),
-    formatAlarmDate,
-    selectYear(year) {
-      this.selectedYear = year;
-      this.getAllAlarmsFromYear(year);
+    loadYear() {
+      this.filter = "all";
+      this.getAllAlarmsFromYear(String(this.selectedYear));
     },
   },
 };
 </script>
 
-<style>
-.alarm-skeleton__text .v-skeleton-loader__text {
-  background-color: rgba(0, 0, 0, 0.12) !important;
-  height: 20px;
-  border-radius: 4px;
-}
-
-.alarm-skeleton__text .v-skeleton-loader__paragraph {
-  background-color: rgba(255, 255, 255, 0) !important;
-  &::after {
-    display: none;
-  }
-}
-</style>
-
 <style scoped lang="scss">
-.circle {
-  height: 30px;
-  width: 30px;
-  border-radius: 80px;
-  box-shadow: 0 0 0 6px rgba(175, 74, 69, 0.4);
-  overflow: hidden;
-}
-.removeLink {
-  color: #000;
-  text-decoration: none;
-}
+@import "alarmTable";
 </style>
