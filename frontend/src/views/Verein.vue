@@ -56,7 +56,7 @@
           </div>
           <div class="fest__bar" />
           <div class="fest__text">
-            <h3>Feiern Sie mit uns das Ehrenamt</h3>
+            <h3>Feiern Sie mit uns und unterstützen Sie das Ehrenamt</h3>
             <p>
               Besuchen Sie unser Gerätehausfest oder das Johannisfeuer. Am
               Gerätehausfest gibt es neben Fahrzeugschau und Einblicken in die

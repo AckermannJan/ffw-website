@@ -51,12 +51,21 @@
         </div>
 
         <div :key="active.id" class="group">
-          <div class="ffw-img group__img">
-            <img
-              :src="active.image"
-              :alt="active.imageAlt"
-              :style="{ objectPosition: active.imagePosition }"
-            />
+          <div class="group__media">
+            <div class="ffw-img group__img">
+              <img
+                :src="active.image"
+                :alt="active.imageAlt"
+                :style="{ objectPosition: active.imagePosition }"
+              />
+            </div>
+            <router-link
+              :to="active.moreLink"
+              class="ffw-btn ffw-btn--outline group__more"
+            >
+              Mehr über die {{ active.name }}
+              <v-icon size="18">mdi-arrow-right</v-icon>
+            </router-link>
           </div>
           <div class="group__text">
             <div>
@@ -95,9 +104,6 @@
                 {{ active.email }}
               </a>
             </div>
-            <router-link :to="active.moreLink" class="ffw-link group__more">
-              Mehr über die {{ active.name }}
-            </router-link>
           </div>
         </div>
       </section>

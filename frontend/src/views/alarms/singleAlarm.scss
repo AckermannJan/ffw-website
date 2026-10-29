@@ -225,7 +225,7 @@ $bp-phone: 640px;
     text-decoration: none;
 
     &:hover .pager__title {
-      text-decoration-thickness: 2px;
+      text-decoration: underline;
     }
 
     &--next {
@@ -245,8 +245,8 @@ $bp-phone: 640px;
     color: var(--ffw-muted);
   }
 
+  // Arrow links: no underline until hover.
   &__title {
     font-weight: 700;
-    text-decoration: underline;
   }
 }

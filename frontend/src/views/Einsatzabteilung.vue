@@ -189,8 +189,6 @@ export default {
           value: pick(cms.einsaetzeProJahr, DEFAULTS.einsaetzeProJahr),
           label: "Einsätze pro Jahr",
         },
-        // Age range of the active service is set by law, not by the CMS.
-        { value: "17–60", label: "Jahre aktiver Dienst" },
       ];
     },
     lead() {
