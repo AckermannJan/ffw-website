@@ -81,8 +81,7 @@ const routes = [
   {
     path: "/einsatzabteilung",
     name: "Einsatzabteilung",
-    component: () => import("../views/Page.vue"),
-    props: { slug: "einsatzabteilung" },
+    component: () => import("../views/Einsatzabteilung.vue"),
   },
   {
     path: "/einsatzabteilung/dienstplan",
