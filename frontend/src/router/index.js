@@ -11,6 +11,12 @@ const routes = [
     },
   },
   {
+    // Static page; takes precedence over the generic CMS page below.
+    path: "/seite/verein",
+    name: "Verein",
+    component: () => import("../views/Verein.vue"),
+  },
+  {
     path: "/seite/:pageSlug",
     name: "Page",
     component: () => import("../views/Page.vue"),

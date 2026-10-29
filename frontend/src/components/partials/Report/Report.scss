@@ -1,39 +1,50 @@
+// Page frame: red notched heading on a surface card (redesign).
+// Used by Page, Technik, the alarm list and single alarms.
 .report {
-  background-color: rgba(59, 59, 59, 0.34);
-  padding-bottom: 20px;
+  background: var(--ffw-surface);
+  border: 1px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  padding-bottom: 32px;
+
   &__headline {
-    color: #fff;
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: 40px;
     position: relative;
-    background-color: #af4a45;
-    height: auto;
-    min-height: 50px;
-    font-size: 1rem;
     display: flex;
     align-items: center;
+    min-height: 64px;
+    margin-bottom: 36px;
+    padding: 16px 24px;
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+
     h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      line-height: 1.4;
       margin: 0;
-      color: #fff;
+      font-size: 1.875rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--ffw-on-red);
+
+      @media (max-width: 640px) {
+        font-size: 1.5rem;
+      }
     }
+
     &::after {
+      content: "";
       position: absolute;
-      width: 0;
-      height: 0;
-      bottom: -15px;
-      content: '';
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 16px solid #af4a45;
-      left: 40px;
+      left: 24px;
+      bottom: -9px;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 9px solid var(--ffw-red);
     }
   }
+
   &__content {
-    padding: 0 20px;
+    padding: 0 32px;
+
+    @media (max-width: 640px) {
+      padding: 0 16px;
+    }
   }
 }
