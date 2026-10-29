@@ -19,7 +19,7 @@ const routes = [
   {
     path: "/seite/:pageSlug",
     name: "Page",
-    component: () => import("../views/Page.vue"),
+    component: () => import("../views/Bericht.vue"),
   },
   {
     path: "/termine",
