@@ -6,7 +6,7 @@
           {{ pageDetails.post_title }}
         </template>
         <template #content>
-          <div class="report__content" v-html="pageDetails.post_content" />
+          <CmsContent :html="pageDetails.post_content" />
         </template>
       </Report>
       <v-carousel
@@ -35,11 +35,13 @@ import { usePageStore } from "@/store/modules/page";
 import { useHead } from "@unhead/vue";
 import { computed } from "vue";
 import Report from "../components/partials/Report/Report.vue";
+import CmsContent from "../components/cms/CmsContent.vue";
 
 export default {
   components: {
     Report,
     Loader,
+    CmsContent,
   },
   props: {
     slug: {
