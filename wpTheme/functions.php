@@ -96,6 +96,10 @@ function ffw_category( $post ) {
  *   @info   -> Returns all all information needed for the sidebar, plus
  *              alarmCountThisYear, hero (start page image) and mitmachen
  *
+ * - getArchive
+ *   @info   -> Returns archived posts and pages (incl. kategorie, excerpt,
+ *              startBildAlt)
+ *
  * - getEinsatzabteilung
  *   @info   -> Returns the figures and Wehrführung contact for the
  *              Einsatzabteilung page (Types fields on that page)
@@ -182,11 +186,20 @@ function getArchive( $request_data ) {
     $newPosts = array();
     foreach ($posts as $post) {
         $archiv = types_get_field_meta_value( 'archiv', $post->ID );
+        if ( $archiv != "1" ) {
+            continue;
+        }
         $startBild = types_get_field_meta_value( 'start-bild', $post->ID );
+        // Read before post_content is stripped below.
+        $excerpt = ffw_excerpt( $post, 30 );
         $post->post_content = strip_tags($post->post_content);
         $data = (object) array(
             'archive' => $archiv,
-            'startBild' => $startBild
+            'startBild' => $startBild,
+            // Added for the redesigned archive; the old fields stay as they were.
+            'startBildAlt' => ffw_image_alt( $startBild ),
+            'kategorie' => ffw_category( $post ),
+            'excerpt' => $excerpt,
         );
         if($archiv == "1"){
             $newPosts[] = (object) array_merge((array) $post, (array) $data);
