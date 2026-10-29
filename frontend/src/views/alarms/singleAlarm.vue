@@ -70,25 +70,7 @@
             <CmsContent :html="alarm.post_content_html" />
           </section>
 
-          <section v-if="photos.length" aria-labelledby="alarm-photos">
-            <h2 id="alarm-photos" class="alarm__title">Bilder</h2>
-            <ul class="photos">
-              <li v-for="(photo, i) in photos" :key="photo.src">
-                <button
-                  type="button"
-                  class="photo"
-                  :aria-label="`${photo.alt} vergrößern`"
-                  @click="photoIndex = i"
-                >
-                  <img :src="photo.src" :alt="photo.alt" loading="lazy" />
-                  <span class="photo__zoom" aria-hidden="true">
-                    <v-icon size="20">mdi-magnify-plus-outline</v-icon>
-                  </span>
-                </button>
-              </li>
-            </ul>
-            <PhotoLightbox v-model:index="photoIndex" :photos="photos" />
-          </section>
+          <PhotoGallery v-if="photos.length" :photos="photos" />
 
           <nav aria-label="Weitere Einsätze" class="pager">
             <router-link
@@ -130,14 +112,14 @@ import {
   parseAlarmTitle,
 } from "@/utils/alarms";
 import CmsContent from "@/components/cms/CmsContent.vue";
-import PhotoLightbox from "@/components/partials/PhotoLightbox.vue";
+import PhotoGallery from "@/components/partials/PhotoGallery.vue";
 
 // Uploads are stored with http:// URLs; the site runs on https.
 const https = (url) => url.replace(/^http:\/\//, "https://");
 
 export default {
   name: "SingleAlarm",
-  components: { CmsContent, PhotoLightbox },
+  components: { CmsContent, PhotoGallery },
   setup() {
     const alarmsStore = useAlarmsStore();
     useHead({
@@ -150,7 +132,6 @@ export default {
   },
   data: () => ({
     yearAlarms: [],
-    photoIndex: null,
   }),
   computed: {
     ...mapState(useAlarmsStore, {
@@ -244,7 +225,6 @@ export default {
   methods: {
     ...mapActions(useAlarmsStore, ["getAlarm"]),
     load() {
-      this.photoIndex = null;
       if (this.slug) this.getAlarm(this.slug);
     },
     // Fetched here instead of through the store, so the Einsätze list keeps
