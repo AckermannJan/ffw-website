@@ -1,31 +1,3 @@
-.welcomeLoader {
-  text-align: center;
-  margin: auto 32vw;
-  &__headline {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 40px;
-  }
-  img {
-    filter: invert(100%);
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .welcomeLoader {
-    text-align: center;
-    margin: auto 4vw;
-    &__headline {
-      font-size: 1.6rem;
-      font-weight: bold;
-      margin-bottom: 40px;
-    }
-    img {
-      width: 50%;
-    }
-  }
-}
-
 // Sidebar left, content right; on tablets and phones the content comes first.
 .layout {
   display: grid;
@@ -58,5 +30,13 @@ body {
 }
 .fade-enter-from,
 .fade-leave-to {
+  opacity: 0;
+}
+
+// Splash screen fades out once the start data is there.
+.splash-leave-active {
+  transition: opacity 0.4s;
+}
+.splash-leave-to {
   opacity: 0;
 }

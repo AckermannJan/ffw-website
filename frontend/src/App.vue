@@ -1,24 +1,8 @@
 <template>
   <v-app id="my-app">
-    <v-overlay v-if="isLoading" :model-value="isLoading" class="overlay">
-      <div class="welcomeLoader">
-        <img
-          src="http://wordpress.feuerwehr-traisa.de/wp-content/uploads/2025/05/rlbs.png"
-          alt="Retten Löschen Bergen Schützen"
-        />
-        <p class="welcomeLoader__headline">
-          Unsere Freizeit für Ihre Sicherheit -<br />
-          Seit {{ yearsInExistence }} Jahren
-        </p>
-        <p class="welcomeLoader__text">
-          Wir freuen uns, dass Sie den Weg auf unsere Webseite gefunden
-          haben.<br />
-          Schauen Sie sich um und entdecken Sie die Vielfalt der Feuerwehr
-          Traisa.
-        </p>
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </div>
-    </v-overlay>
+    <transition name="splash">
+      <SplashScreen v-if="isLoading" />
+    </transition>
 
     <transition name="fade">
       <app-header v-if="!isLoading" />
@@ -49,51 +33,33 @@ import { useHead } from "@unhead/vue";
 import Header from "./components/partials/Header.vue";
 import Footer from "./components/partials/Footer.vue";
 import Sidebar from "./components/partials/Sidebar.vue";
-import { momentInstance } from "@/utils/moment";
+import SplashScreen from "./components/partials/SplashScreen.vue";
+import { ORGANIZATION_LD, SITE_NAME } from "@/utils/seo";
 
 export default {
   components: {
     Sidebar,
+    SplashScreen,
     appHeader: Header,
     appFooter: Footer,
   },
   setup() {
+    // Site-wide head; each page sets its own title, description, canonical
+    // URL and link previews via usePageSeo (utils/seo.js).
     useHead({
-      title: "Feuerwehr Mühltal Traisa",
       htmlAttrs: { lang: "de" },
-      meta: [
-        { charset: "utf-8" },
-        { name: "robots", content: "INDEX, FOLLOW" },
+      meta: [{ name: "author", content: SITE_NAME }],
+      script: [
         {
-          name: "description",
-          content:
-            "Offizielle Homepage der Freiwilligen Feuerwehr Mühltal-Traisa. Auf dieser Seite finden Sie Informationen über die Feuerwehr Traisa.",
-        },
-        {
-          name: "author",
-          content: "Freiwillige Feuerwehr Mühltal Traisa.",
-        },
-        {
-          name: "keywords",
-          content:
-            "feuer,feuerwehr,feuerwache,traisa,mühltal,muehltal,wache,aua,ortsteil,brand,ff," +
-            "fw,ffw,post,bma,ölsput,lf,tlf,hlf,rtw,feuerwehrmann,dienst,freiwillig,freiwillige," +
-            "ehrenamtlich,immer,da,darmstadt,muehltal,gemeinde,mtf,mtw,löschfahrzeug,löschgruppenfahrzeug," +
-            "einsatz,einsätze,fft,ffwt,traase,traisa",
+          key: "organization-ld",
+          type: "application/ld+json",
+          innerHTML: JSON.stringify(ORGANIZATION_LD),
         },
       ],
     });
   },
-  data() {
-    return {
-      showLoader: true,
-    };
-  },
   computed: {
     ...mapState(useIndexStore, ["isLoading"]),
-    yearsInExistence() {
-      return momentInstance().diff("1880-01-01", "years", false);
-    },
   },
 };
 </script>

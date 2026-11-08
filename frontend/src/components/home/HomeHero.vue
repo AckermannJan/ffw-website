@@ -104,7 +104,9 @@ export default {
     }
   }
 
+  // Always on its own line under the claim.
   &__accent {
+    display: block;
     color: var(--ffw-red-text);
   }
 

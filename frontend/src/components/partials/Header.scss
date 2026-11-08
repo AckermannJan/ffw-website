@@ -74,6 +74,21 @@ $bp-phone: 640px;
     gap: 10px;
   }
 
+  // Desktop without a dialer: the number as a label, not a button
+  // (see usePhoneCalls).
+  &__emergency--label {
+    padding: 0 8px;
+    background: transparent;
+    color: var(--ffw-red-text) !important;
+    font-size: 1.125rem;
+    font-weight: 800;
+    cursor: default;
+
+    &:hover {
+      filter: none;
+    }
+  }
+
   @media (max-width: 1120px) {
     &__grid {
       grid-template-columns: 210px minmax(0, 1fr) auto;
@@ -84,12 +99,20 @@ $bp-phone: 640px;
     }
   }
 
-  @media (max-width: $bp-phone) {
+  // Below tablet width the sketch squeezes the title onto three lines.
+  @media (max-width: 960px) {
     &__grid {
       grid-template-columns: minmax(0, 1fr) auto;
+    }
+    &__sketch {
+      display: none;
+    }
+  }
+
+  @media (max-width: $bp-phone) {
+    &__grid {
       gap: 12px;
     }
-    &__sketch,
     &__emergency {
       display: none;
     }

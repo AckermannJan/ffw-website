@@ -1,1 +1,4 @@
-Sitemap: https://ff-traisa.info/sitemap.xml
+User-agent: *
+Allow: /
+
+Sitemap: https://www.feuerwehr-traisa.de/sitemap.xml

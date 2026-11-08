@@ -8,7 +8,13 @@
         </span>
         <span>
           Im Notfall immer
-          <a href="tel:112" class="utility__emergency">112</a> wählen
+          <component
+            :is="canCall ? 'a' : 'span'"
+            :href="canCall ? 'tel:112' : undefined"
+            class="utility__emergency"
+            >112</component
+          >
+          wählen
         </span>
       </div>
     </div>
@@ -25,10 +31,18 @@
           </div>
         </div>
         <div class="brand__actions">
-          <a href="tel:112" class="ffw-btn brand__emergency">
+          <component
+            :is="canCall ? 'a' : 'span'"
+            :href="canCall ? 'tel:112' : undefined"
+            :class="[
+              'ffw-btn',
+              'brand__emergency',
+              { 'brand__emergency--label': !canCall },
+            ]"
+          >
             <v-icon size="20">mdi-phone</v-icon>
             Notruf 112
-          </a>
+          </component>
           <button
             type="button"
             class="icon-btn"
@@ -81,7 +95,11 @@
             </li>
           </ul>
 
-          <router-link to="/" class="nav__link nav__mobile-home" aria-label="Startseite">
+          <router-link
+            to="/"
+            class="nav__link nav__mobile-home"
+            aria-label="Startseite"
+          >
             <v-icon size="24">mdi-home</v-icon>
           </router-link>
           <button
@@ -98,7 +116,9 @@
 
         <ul v-if="menuOpen" id="mobile-menu" class="nav__mobile">
           <li>
-            <router-link to="/" class="nav__mobile-link">Startseite</router-link>
+            <router-link to="/" class="nav__mobile-link"
+              >Startseite</router-link
+            >
           </li>
           <template v-for="item in items" :key="item.to">
             <li>
@@ -128,6 +148,7 @@
 <script>
 import sketch from "@/assets/img/sketch.png";
 import { useColorScheme } from "@/composables/useColorScheme";
+import { usePhoneCalls } from "@/composables/usePhoneCalls";
 import { FOUNDED_YEAR } from "@/utils/constants";
 
 const NAV_ITEMS = [
@@ -175,7 +196,8 @@ export default {
   name: "AppHeader",
   setup() {
     const { isDark, toggle } = useColorScheme();
-    return { isDark, toggle };
+    const { canCall } = usePhoneCalls();
+    return { isDark, toggle, canCall };
   },
   data: () => ({
     menuOpen: false,

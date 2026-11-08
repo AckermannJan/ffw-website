@@ -112,6 +112,17 @@ export default {
       });
   },
 
+  getEinsatzabteilung(cb) {
+    axios
+      .get(SETTINGS.CUSTOM_API_BASE_PATH + "getEinsatzabteilung/")
+      .then((response) => {
+        cb(response.data);
+      })
+      .catch((e) => {
+        cb(e);
+      });
+  },
+
   getAllAlarmsFromYear(year, cb) {
     axios
       .get(SETTINGS.CUSTOM_API_BASE_PATH + "getAllAlarmsFromYear/", {

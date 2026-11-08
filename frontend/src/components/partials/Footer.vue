@@ -50,7 +50,9 @@
             Telefax: (0 61 51) 2 79 17 21
           </p>
           <p class="site-footer__emergency">
-            Im Notfall: <a href="tel:112">112</a>
+            Im Notfall:
+            <a v-if="canCall" href="tel:112">112</a>
+            <span v-else>112</span>
           </p>
         </div>
         <div>
@@ -80,8 +82,14 @@
 </template>
 
 <script>
+import { usePhoneCalls } from "@/composables/usePhoneCalls";
+
 export default {
   name: "AppFooter",
+  setup() {
+    const { canCall } = usePhoneCalls();
+    return { canCall };
+  },
   data: () => ({ year: new Date().getFullYear() }),
 };
 </script>
@@ -105,6 +113,12 @@ export default {
     @media (max-width: 640px) {
       grid-template-columns: minmax(0, 1fr);
     }
+
+    // Each column is a container, so the big words can scale with it.
+    > div {
+      min-width: 0;
+      container-type: inline-size;
+    }
   }
 
   &__small {
@@ -113,7 +127,9 @@ export default {
 
   &__big {
     margin: 0 0 16px;
-    font-size: 3rem;
+    // "Impressum" is about 5.4em wide: shrink it in narrow columns instead
+    // of letting it run into the next one.
+    font-size: min(3rem, 18cqi);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
