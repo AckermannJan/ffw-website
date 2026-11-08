@@ -1,5 +1,8 @@
 import { createApp } from "vue";
+// Icon font from the installed package (was an unpinned CDN link).
+import "@mdi/font/css/materialdesignicons.css";
 import "./assets/css/styles.css";
+import "./assets/css/theme.css";
 import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";

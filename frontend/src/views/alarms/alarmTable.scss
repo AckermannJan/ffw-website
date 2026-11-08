@@ -1,0 +1,268 @@
+// Layout follows the Einsätze artboard in the design canvas.
+$bp-wide: 1120px;
+$bp-phone: 640px;
+
+.alarms {
+  background: var(--ffw-surface);
+  border: 1px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  color: var(--ffw-ink);
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px;
+
+    h1 {
+      margin: 0;
+      font-size: 1.875rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--ffw-on-red);
+
+      @media (max-width: $bp-phone) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  &__body {
+    padding: 28px 24px 28px;
+
+    @media (max-width: $bp-phone) {
+      padding: 24px 16px;
+    }
+  }
+}
+
+// ─── Year picker ─────────────────────────────────────────────────────────
+
+.year {
+  position: relative;
+  flex: none;
+
+  &__select {
+    appearance: none;
+    min-height: 44px;
+    padding: 0 38px 0 14px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: var(--ffw-radius);
+    background: transparent;
+    color: var(--ffw-on-red);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    option {
+      color: var(--ffw-ink);
+      background: var(--ffw-surface);
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ffw-on-red);
+    pointer-events: none;
+  }
+}
+
+// ─── Stats + filter ──────────────────────────────────────────────────────
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: $bp-wide) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  padding: 14px 16px;
+  background: var(--ffw-panel);
+  border-radius: var(--ffw-radius);
+
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--ffw-red-text);
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    color: var(--ffw-muted);
+  }
+
+  &--loading {
+    min-height: 72px;
+    opacity: 0.6;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2px solid var(--ffw-line);
+  border-radius: 999px;
+  background: var(--ffw-surface);
+  color: var(--ffw-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &--on {
+    border-color: var(--ffw-red);
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+  }
+}
+
+// ─── Month groups + rows ─────────────────────────────────────────────────
+
+.month {
+  margin-top: 24px;
+
+  &__title {
+    margin: 0 0 4px;
+    padding-bottom: 6px;
+    border-bottom: 2px dotted var(--ffw-red);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ffw-muted);
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ffw-line);
+  color: var(--ffw-ink);
+  text-decoration: none;
+
+  &:hover &__title {
+    text-decoration: underline;
+  }
+
+  &__text {
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  &__date {
+    font-size: 0.875rem;
+    color: var(--ffw-muted);
+  }
+
+  &--loading {
+    height: 70px;
+    margin-top: 8px;
+    background: var(--ffw-panel);
+    border-radius: var(--ffw-radius);
+    opacity: 0.6;
+  }
+
+  @media (max-width: $bp-phone) {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+
+    .tag {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+}
+
+.badge {
+  border: 2px solid var(--ffw-red);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  text-align: center;
+  font-weight: 800;
+
+  &__top {
+    padding: 2px 0;
+    background: var(--ffw-surface);
+    color: var(--ffw-red-text);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__bottom {
+    padding: 1px 0 3px;
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+    font-size: 1.25rem;
+
+    // Ranges like "21–22"
+    &--long {
+      padding: 5px 0 6px;
+      font-size: 0.8125rem;
+    }
+  }
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--ffw-panel);
+  color: var(--ffw-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  .v-icon {
+    color: var(--ffw-red-text);
+  }
+}
+
+// ─── Empty states ────────────────────────────────────────────────────────
+
+.empty {
+  padding: 32px 0;
+  text-align: center;
+
+  &__icon {
+    color: var(--ffw-red-text);
+  }
+
+  h2 {
+    margin: 12px 0 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
+
+.empty-filter {
+  margin: 24px 0 0;
+  color: var(--ffw-muted);
+}

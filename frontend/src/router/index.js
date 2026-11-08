@@ -4,12 +4,22 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () => import("../views/Home.vue"),
+    // "hero" renders full width above the sidebar layout (see App.vue).
+    components: {
+      default: () => import("../views/Home.vue"),
+      hero: () => import("../components/home/HomeHero.vue"),
+    },
+  },
+  {
+    // Static page; takes precedence over the generic CMS page below.
+    path: "/seite/verein",
+    name: "Verein",
+    component: () => import("../views/Verein.vue"),
   },
   {
     path: "/seite/:pageSlug",
     name: "Page",
-    component: () => import("../views/Page.vue"),
+    component: () => import("../views/Bericht.vue"),
   },
   {
     path: "/termine",
@@ -71,8 +81,7 @@ const routes = [
   {
     path: "/einsatzabteilung",
     name: "Einsatzabteilung",
-    component: () => import("../views/Page.vue"),
-    props: { slug: "einsatzabteilung" },
+    component: () => import("../views/Einsatzabteilung.vue"),
   },
   {
     path: "/einsatzabteilung/dienstplan",

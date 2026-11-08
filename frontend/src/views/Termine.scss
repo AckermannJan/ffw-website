@@ -1,0 +1,263 @@
+// The design canvas has no Termine artboard; this page reuses the Dienstplan
+// pieces (month groups, date badges, past toggle).
+$bp-phone: 640px;
+
+.termine {
+  background: var(--ffw-surface);
+  border: 1px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  color: var(--ffw-ink);
+
+  &__head {
+    padding: 18px 24px;
+
+    h1 {
+      margin: 0;
+      font-size: 1.875rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--ffw-on-red);
+
+      @media (max-width: $bp-phone) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  &__sub {
+    font-size: 0.9375rem;
+    opacity: 0.92;
+  }
+
+  &__body {
+    padding: 32px 24px 28px;
+
+    @media (max-width: $bp-phone) {
+      padding: 24px 16px;
+    }
+  }
+}
+
+.muted {
+  margin: 0;
+  color: var(--ffw-muted);
+}
+
+// ─── Month groups + events ───────────────────────────────────────────────
+
+.month {
+  & + & {
+    margin-top: 32px;
+  }
+
+  &__title {
+    margin: 0 0 4px;
+    padding-bottom: 6px;
+    border-bottom: 2px dotted var(--ffw-red);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ffw-muted);
+  }
+}
+
+.event {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--ffw-line);
+
+  &__text {
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  &__meta {
+    margin-top: 2px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--ffw-red-text);
+  }
+
+  &__desc {
+    margin-top: 10px;
+    color: var(--ffw-muted);
+
+    :deep(p) {
+      margin: 0 0 6px;
+    }
+    :deep(p:last-child) {
+      margin-bottom: 0;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-top: 14px;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__btn {
+    min-height: 44px;
+    padding: 0 16px;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  &__report {
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  &--past {
+    opacity: 0.55;
+  }
+
+  &--today {
+    margin: 0 -12px;
+    padding: 20px 12px;
+    background: var(--ffw-panel);
+    border-radius: var(--ffw-radius);
+  }
+
+  &--loading {
+    height: 120px;
+    margin-bottom: 12px;
+    background: var(--ffw-panel);
+    border-radius: var(--ffw-radius);
+    opacity: 0.6;
+  }
+
+  // On phones only title and date sit next to the badge; description and
+  // buttons use the full width below it.
+  @media (max-width: $bp-phone) {
+    grid-template-columns: 56px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 0;
+
+    .badge {
+      grid-row: 1 / span 2;
+    }
+
+    &__text {
+      display: contents;
+    }
+
+    &__title,
+    &__meta {
+      grid-column: 2;
+    }
+
+    &__desc,
+    &__actions {
+      grid-column: 1 / -1;
+    }
+
+    &__title {
+      font-size: 1.125rem;
+    }
+
+    &__btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+.today {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--ffw-red);
+  color: var(--ffw-on-red);
+  font-size: 0.75rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+
+.badge {
+  border: 2px solid var(--ffw-red);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  text-align: center;
+  font-weight: 800;
+
+  &__top {
+    padding: 3px 0;
+    background: var(--ffw-surface);
+    color: var(--ffw-red-text);
+    font-size: 0.875rem;
+    letter-spacing: 0.06em;
+  }
+
+  &__bottom {
+    padding: 2px 0 5px;
+    background: var(--ffw-red);
+    color: var(--ffw-on-red);
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: $bp-phone) {
+    &__top {
+      font-size: 0.75rem;
+    }
+    &__bottom {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// ─── Past toggle + hint ──────────────────────────────────────────────────
+
+.past-toggle {
+  min-height: 44px;
+  margin-top: 24px;
+  padding: 0 16px;
+  border: 2px solid var(--ffw-line);
+  border-radius: var(--ffw-radius);
+  background: var(--ffw-surface);
+  color: var(--ffw-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hint {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 28px;
+  padding: 16px 18px;
+  border-left: 6px solid var(--ffw-red);
+  border-radius: var(--ffw-radius);
+  background: var(--ffw-panel);
+  color: var(--ffw-muted);
+  font-size: 0.9375rem;
+
+  .v-icon {
+    margin-top: 1px;
+    color: var(--ffw-red-text);
+  }
+}

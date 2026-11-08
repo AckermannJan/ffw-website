@@ -1,0 +1,192 @@
+/* ─── Design tokens ─────────────────────────────────────────────────────────
+   Light is the default; dark applies when the user picks it (data-theme on
+   <html>, set by useColorScheme) or, before that, when the OS prefers dark. */
+
+:root {
+  --ffw-bg: #f3f1f0;
+  --ffw-surface: #ffffff;
+  --ffw-panel: #e8e4e2;
+  --ffw-line: #d6cecb;
+  --ffw-ink: #1e1a19;
+  --ffw-muted: #5c5452;
+  --ffw-red: #af4a45;
+  --ffw-red-text: #a2423d;
+  --ffw-on-red: #ffffff;
+  --ffw-nav: #af4a45;
+  --ffw-nav-active: #8e3934;
+  --ffw-foot: #2d2928;
+  --ffw-foot-ink: #cfc7c5;
+  --ffw-foot-head: #d2645e;
+  --ffw-ph-1: #ddd7d5;
+  --ffw-ph-2: #e9e5e3;
+  --ffw-radius: 6px;
+  --ffw-wrap: 1240px;
+  --ffw-gutter: 32px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --ffw-bg: #141212;
+  --ffw-surface: #1d1a1a;
+  --ffw-panel: #262222;
+  --ffw-line: #3a3433;
+  --ffw-ink: #f0ebea;
+  --ffw-muted: #b4aaa8;
+  --ffw-red: #b4504a;
+  --ffw-red-text: #e8908a;
+  --ffw-on-red: #ffffff;
+  --ffw-nav: #8f3a36;
+  --ffw-nav-active: #6e2b28;
+  --ffw-foot: #0d0b0b;
+  --ffw-foot-ink: #b4aaa8;
+  --ffw-foot-head: #d86a63;
+  --ffw-ph-1: #2a2525;
+  --ffw-ph-2: #332d2c;
+  color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --ffw-gutter: 16px;
+  }
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+
+body,
+.v-application {
+  background: var(--ffw-bg) !important;
+  color: var(--ffw-ink);
+  line-height: 1.55;
+}
+
+.ffw-wrap {
+  max-width: var(--ffw-wrap);
+  margin: 0 auto;
+  padding-left: var(--ffw-gutter);
+  padding-right: var(--ffw-gutter);
+}
+
+.ffw-link {
+  color: var(--ffw-red-text);
+}
+.ffw-link:hover {
+  color: var(--ffw-ink);
+}
+
+/* Section heading with the solid red underline from the original site */
+.ffw-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ffw-red);
+}
+.ffw-section-title h2 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.ffw-section-title a {
+  font-size: 0.875rem;
+}
+
+/* Red header bar with the small triangle notch */
+.ffw-notch {
+  position: relative;
+  background: var(--ffw-red);
+  color: var(--ffw-on-red);
+}
+.ffw-notch::after {
+  content: "";
+  position: absolute;
+  left: 24px;
+  bottom: -9px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid var(--ffw-red);
+}
+
+/* Striped backdrop shown while an image loads or when it is missing */
+.ffw-img {
+  position: relative;
+  overflow: hidden;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--ffw-ph-1) 0 14px,
+    var(--ffw-ph-2) 14px 28px
+  );
+}
+.ffw-img > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ffw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: var(--ffw-radius);
+  background: var(--ffw-red);
+  color: var(--ffw-on-red) !important;
+  text-decoration: none;
+  font-weight: 700;
+  transition: filter 0.15s;
+}
+.ffw-btn:hover {
+  filter: brightness(1.1);
+}
+.ffw-btn--outline {
+  background: transparent;
+  border: 2px solid var(--ffw-red);
+  color: var(--ffw-red-text) !important;
+}
+
+.ffw-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ffw-red-text);
+}
+
+/* Weekday + day badge used for Termine and Dienstplan */
+.ffw-date-badge {
+  width: 56px;
+  flex: none;
+  border: 2px solid var(--ffw-red);
+  border-radius: var(--ffw-radius);
+  overflow: hidden;
+  text-align: center;
+  font-weight: 800;
+}
+.ffw-date-badge__top {
+  background: var(--ffw-surface);
+  color: var(--ffw-red-text);
+  font-size: 0.9375rem;
+  padding: 3px 0;
+}
+.ffw-date-badge__bottom {
+  background: var(--ffw-red);
+  color: var(--ffw-on-red);
+  font-size: 1.375rem;
+  padding: 2px 0 5px;
+}
+
+.ffw-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
