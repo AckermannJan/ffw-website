@@ -46,14 +46,11 @@
           <button
             type="button"
             class="icon-btn"
-            :aria-label="
-              isDark ? 'Helles Design aktivieren' : 'Dunkles Design aktivieren'
-            "
-            @click="toggle"
+            :aria-label="schemeButton.label"
+            :title="schemeButton.label"
+            @click="cycle"
           >
-            <v-icon size="22">{{
-              isDark ? "mdi-white-balance-sunny" : "mdi-weather-night"
-            }}</v-icon>
+            <v-icon size="22">{{ schemeButton.icon }}</v-icon>
           </button>
         </div>
       </div>
@@ -147,9 +144,26 @@
 
 <script>
 import sketch from "@/assets/img/sketch.png";
+import { computed } from "vue";
 import { useColorScheme } from "@/composables/useColorScheme";
 import { usePhoneCalls } from "@/composables/usePhoneCalls";
 import { FOUNDED_YEAR } from "@/utils/constants";
+
+// Current setting and what a click switches to.
+const SCHEME_BUTTONS = {
+  system: {
+    icon: "mdi-theme-light-dark",
+    label: "Design: wie Gerät. Wechseln zu hell",
+  },
+  light: {
+    icon: "mdi-white-balance-sunny",
+    label: "Design: hell. Wechseln zu dunkel",
+  },
+  dark: {
+    icon: "mdi-weather-night",
+    label: "Design: dunkel. Wechseln zu wie Gerät",
+  },
+};
 
 const NAV_ITEMS = [
   {
@@ -195,9 +209,10 @@ const NAV_ITEMS = [
 export default {
   name: "AppHeader",
   setup() {
-    const { isDark, toggle } = useColorScheme();
+    const { preference, cycle } = useColorScheme();
+    const schemeButton = computed(() => SCHEME_BUTTONS[preference.value]);
     const { canCall } = usePhoneCalls();
-    return { isDark, toggle, canCall };
+    return { schemeButton, cycle, canCall };
   },
   data: () => ({
     menuOpen: false,

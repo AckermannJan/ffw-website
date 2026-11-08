@@ -3,42 +3,68 @@ import { useTheme } from "vuetify";
 
 const STORAGE_KEY = "ffw-color-scheme";
 
-function readInitialScheme() {
+// "system" follows the device setting (also when it changes while the page
+// is open); "light" and "dark" are the user's explicit choice.
+export const PREFERENCES = ["system", "light", "dark"];
+
+const darkQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
+
+function readPreference() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark") return stored;
+    if (PREFERENCES.includes(stored)) return stored;
   } catch (e) {
-    // Storage can be blocked (private mode); fall back to the OS setting.
+    // Storage can be blocked (private mode); follow the device.
   }
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return "system";
 }
 
-function applyScheme(value) {
-  document.documentElement.dataset.theme = value;
+// Shared across components so the header button and Vuetify stay in sync.
+const preference = ref(readPreference());
+const systemDark = ref(Boolean(darkQuery?.matches));
+const scheme = computed(() =>
+  preference.value === "system"
+    ? systemDark.value
+      ? "dark"
+      : "light"
+    : preference.value,
+);
+
+let vuetifyTheme = null;
+
+function applyScheme() {
+  document.documentElement.dataset.theme = scheme.value;
+  if (vuetifyTheme) vuetifyTheme.global.name.value = scheme.value;
 }
 
-// Shared across components so the header toggle and Vuetify stay in sync.
-const scheme = ref(readInitialScheme());
-applyScheme(scheme.value);
+darkQuery?.addEventListener?.("change", (event) => {
+  systemDark.value = event.matches;
+  applyScheme();
+});
+applyScheme();
 
 export function useColorScheme() {
-  const vuetifyTheme = useTheme();
-  vuetifyTheme.global.name.value = scheme.value;
+  vuetifyTheme = useTheme();
+  applyScheme();
 
   const isDark = computed(() => scheme.value === "dark");
 
-  function toggle() {
-    scheme.value = isDark.value ? "light" : "dark";
-    applyScheme(scheme.value);
-    vuetifyTheme.global.name.value = scheme.value;
+  function setPreference(value) {
+    preference.value = value;
+    applyScheme();
     try {
-      localStorage.setItem(STORAGE_KEY, scheme.value);
+      if (value === "system") localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, value);
     } catch (e) {
       // Not persisted; the choice still applies for this visit.
     }
   }
 
-  return { scheme, isDark, toggle };
+  // Header button: Gerät → Hell → Dunkel → Gerät …
+  function cycle() {
+    const next = PREFERENCES[(PREFERENCES.indexOf(preference.value) + 1) % 3];
+    setPreference(next);
+  }
+
+  return { preference, scheme, isDark, setPreference, cycle };
 }
